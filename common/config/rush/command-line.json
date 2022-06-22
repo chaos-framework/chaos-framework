@@ -12,6 +12,14 @@
    */
   "commands": [
     {
+      "name": "test",
+      "commandKind": "bulk",
+      "summary": "Run all tests in parallel for each project that has them.",
+      "safeForSimultaneousRushProcesses": true,
+      "enableParallelism": true,
+      "ignoreMissingScript": true
+    },
+    {
       "name": "prettier",
       "commandKind": "global",
       "summary": "Used by the pre-commit Git hook. This command invokes Prettier to reformat staged changes.",
@@ -21,7 +29,7 @@
 
       // This will invoke common/autoinstallers/rush-prettier/node_modules/.bin/pretty-quick
       "shellCommand": "pretty-quick --staged"
-    },
+    }
     // {
     //   /**
     //    * (Required) Determines the type of custom command.

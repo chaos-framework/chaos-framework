@@ -53,7 +53,7 @@ class FollowupAction extends NumberedAction {
 describe('Processing actions', function () {
   it('Processes actions and events in the expected order', async function () {
     let event = new EffectEvent(new NoEffectAction(1).asEffect());
-    let result = (await processRunner(event)) as NumberedAction[];
+    let result = (await processRunner(event)).actions as NumberedAction[];
     expect(result.length).to.equal(1);
     expect(result[0].index).to.equal(1);
     event = new EffectEvent(
@@ -61,7 +61,7 @@ describe('Processing actions', function () {
       new ImmediateAction(2).asEffect(),
       new FollowupAction(4).asEffect()
     );
-    result = (await processRunner(event)) as NumberedAction[];
+    result = (await processRunner(event)).actions as NumberedAction[];
     expect(result.map((a) => a.index)).to.eql([1, 3, 2, 4, 5]);
   });
 });

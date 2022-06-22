@@ -1,14 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
-import {
-  AddPropertyAction,
-  Component,
-  EffectGenerator,
-  Entity,
-  Vector
-} from '@chaos-framework/core';
+import { AddPropertyAction, Component, EffectGenerator, Entity } from '@chaos-framework/core';
 
-import { OnPhase, ForAction, Successful, Permitted } from '../src/index.js';
+import { OnPhase, ForAction, Successful, Permitted, TargetsMe } from '../src/index.js';
 
 describe.skip('Conditional Decorator order and composition', function () {
   it('Uses conditional guards in prototype handlers regardless of decorator order', async function () {
