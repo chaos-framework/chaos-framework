@@ -1,10 +1,4 @@
-import {
-  Entity,
-  ProcessEffect,
-  ProcessEffectRunner,
-  Action,
-  ProcessEffectKey
-} from '../internal.js';
+import { Entity, ProcessEffect, ProcessEffectRunner, Action, ProcessEffectKey } from '../internal.js';
 import { ProcessEffectGenerator } from './Effect.js';
 
 export interface Event extends ProcessEffectRunner {

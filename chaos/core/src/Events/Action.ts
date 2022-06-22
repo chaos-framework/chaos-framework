@@ -153,9 +153,7 @@ export abstract class Action<
 
     // Apply this action to the target, checking for permission and if still feasible
     if (
-      (this.permitted && this.feasabilityCallback !== undefined
-        ? this.feasabilityCallback(this)
-        : true) ||
+      (this.permitted && this.feasabilityCallback !== undefined ? this.feasabilityCallback(this) : true) ||
       force
     ) {
       const generator = this.apply();

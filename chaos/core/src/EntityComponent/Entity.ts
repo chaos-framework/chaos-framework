@@ -197,9 +197,7 @@ export class Entity implements ComponentContainer, Printable {
         world: this.world
       });
     }
-    throw new Error(
-      'Tried to publish an entity to a client is not published or does not have a world.'
-    );
+    throw new Error('Tried to publish an entity to a client is not published or does not have a world.');
   }
 
   // Publishing
@@ -239,11 +237,7 @@ export class Entity implements ComponentContainer, Printable {
 
   // Unpublishing
 
-  unpublish({
-    caster,
-    using,
-    metadata
-  }: UnpublishEntityAction.EntityParams = {}): UnpublishEntityAction {
+  unpublish({ caster, using, metadata }: UnpublishEntityAction.EntityParams = {}): UnpublishEntityAction {
     return new UnpublishEntityAction({
       caster,
       target: this,
@@ -358,10 +352,7 @@ export class Entity implements ComponentContainer, Printable {
     }
   }
 
-  removeProperty(
-    { caster, using, name, metadata }: RemovePropertyAction.EntityParams,
-    force = false
-  ) {
+  removeProperty({ caster, using, name, metadata }: RemovePropertyAction.EntityParams, force = false) {
     return new RemovePropertyAction({
       caster,
       target: this,
@@ -402,9 +393,7 @@ export class Entity implements ComponentContainer, Printable {
     const grants = this.abilities.get(name);
     if (grants) {
       // check if ability already granted by this combo
-      const duplicate = grants.find(
-        (grant) => grant.grantedBy === grantedBy && grant.using === using
-      );
+      const duplicate = grants.find((grant) => grant.grantedBy === grantedBy && grant.using === using);
       if (!duplicate) {
         grants.push({ ability, grantedBy: grantedBy?.id, using: using?.id });
       } else {
@@ -437,9 +426,7 @@ export class Entity implements ComponentContainer, Printable {
     if (!grants) {
       return false;
     }
-    const grantIndex = grants.findIndex(
-      (grant) => grant.grantedBy === grantedBy && grant.using === using
-    );
+    const grantIndex = grants.findIndex((grant) => grant.grantedBy === grantedBy && grant.using === using);
     if (grantIndex < 0) {
       return false;
     }
@@ -458,10 +445,7 @@ export class Entity implements ComponentContainer, Printable {
 
   // Equipping items
 
-  equip(
-    { caster, slot, item, metadata }: EquipItemAction.EntityParams,
-    force = false
-  ): EquipItemAction {
+  equip({ caster, slot, item, metadata }: EquipItemAction.EntityParams, force = false): EquipItemAction {
     return new EquipItemAction({ caster, target: this, slot, item, metadata });
   }
 
@@ -565,13 +549,7 @@ export class Entity implements ComponentContainer, Printable {
 
   // World
 
-  changeWorlds({
-    caster,
-    to,
-    position,
-    using,
-    metadata
-  }: ChangeWorldAction.EntityParams): ChangeWorldAction {
+  changeWorlds({ caster, to, position, using, metadata }: ChangeWorldAction.EntityParams): ChangeWorldAction {
     if (this.world === undefined) {
       throw new Error();
     }
@@ -706,17 +684,7 @@ export namespace Entity {
 
   export function DeserializeAsClient(json: Entity.SerializedForClient): Entity {
     try {
-      const {
-        id,
-        name,
-        metadata,
-        team,
-        active,
-        omnipotent,
-        components,
-        world: worldId,
-        glyph
-      } = json;
+      const { id, name, metadata, team, active, omnipotent, components, world: worldId, glyph } = json;
       const deserialized = new Entity({
         id,
         name,

@@ -50,12 +50,7 @@ export class Value {
   }
 
   // Create an adjust action
-  public set({
-    amount,
-    caster,
-    using,
-    metadata
-  }: PropertyChangeAction.ValueParams): PropertyChangeAction {
+  public set({ amount, caster, using, metadata }: PropertyChangeAction.ValueParams): PropertyChangeAction {
     return new PropertyChangeAction({
       caster,
       target: this.property.entity,
@@ -77,12 +72,7 @@ export class Value {
   }
 
   // Create an adjust action
-  public adjust({
-    amount,
-    caster,
-    using,
-    metadata
-  }: PropertyChangeAction.ValueParams): PropertyChangeAction {
+  public adjust({ amount, caster, using, metadata }: PropertyChangeAction.ValueParams): PropertyChangeAction {
     return new PropertyChangeAction({
       caster,
       target: this.property.entity,

@@ -17,16 +17,7 @@ export class AddPropertyAction extends Action<Entity> {
   min?: number;
   max?: number;
 
-  constructor({
-    caster,
-    target,
-    name,
-    current = 0,
-    min,
-    max,
-    using,
-    metadata
-  }: AddPropertyAction.Params) {
+  constructor({ caster, target, name, current = 0, min, max, using, metadata }: AddPropertyAction.Params) {
     super({ caster, using, metadata });
     this.target = target;
     this.name = name;

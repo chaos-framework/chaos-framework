@@ -7,10 +7,7 @@ export type EffectRunner<T extends Effect = Effect, R = any, N = any> = {
   run(): EffectGenerator<T, R, N>;
 };
 
-export type ActionHandler<T extends Action = Action> = (
-  action: T,
-  ...params: any[]
-) => EffectGenerator;
+export type ActionHandler<T extends Action = Action> = (action: T, ...params: any[]) => EffectGenerator;
 
 export type Immediate = readonly ['IMMEDIATE', EffectRunner];
 export type Followup = readonly ['FOLLOWUP', EffectRunner];

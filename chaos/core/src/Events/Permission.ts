@@ -8,11 +8,7 @@ export class Permission {
 
   constructor(
     permitted: boolean,
-    {
-      by,
-      using,
-      message
-    }: { by?: Entity | Component; using?: Entity | Component; message?: string } = {}
+    { by, using, message }: { by?: Entity | Component; using?: Entity | Component; message?: string } = {}
   ) {
     this.permitted = permitted;
     this.by = by;

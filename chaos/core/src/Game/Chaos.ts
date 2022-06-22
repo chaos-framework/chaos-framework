@@ -240,11 +240,7 @@ export function senseEntity(e: Entity): boolean {
 
 // Optionally modify underlying serialized method to customize it for a team or player.
 // Return undefined if no modification is necessary
-export function percieve(
-  a: Action,
-  viewer: Player | Team,
-  visibility: VisibilityType
-): string | undefined {
+export function percieve(a: Action, viewer: Player | Team, visibility: VisibilityType): string | undefined {
   return undefined;
 }
 
@@ -274,9 +270,7 @@ export function serializeForScope(viewer: Viewer): SerializedForClient {
       worldIds.add(id);
       const world = getWorld(id);
       if (world === undefined) {
-        throw new Error(
-          `Could not find work id ${id} when serializing chunk ${x} ${y} for client.`
-        );
+        throw new Error(`Could not find work id ${id} when serializing chunk ${x} ${y} for client.`);
       }
       serialized.worldData[id] ??= [];
       // yeesh

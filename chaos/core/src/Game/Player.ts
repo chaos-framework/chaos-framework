@@ -34,13 +34,7 @@ export class Player implements Viewer, ComponentContainer {
 
   published = true; // TODO change this?
 
-  constructor({
-    id = uuid(),
-    username,
-    team,
-    admin = false,
-    client
-  }: Player.ConstructorParams = {}) {
+  constructor({ id = uuid(), username, team, admin = false, client }: Player.ConstructorParams = {}) {
     this.id = id;
     this.username = username ? username : this.id.substring(this.id.length - 6);
     this.admin = admin;
