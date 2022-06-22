@@ -412,6 +412,18 @@
     {
       "packageName": "@chaos-framework/socket-io",
       "projectFolder": "io/socket-io"
+    },
+    {
+      "packageName": "@chaos-framework/react-lib",
+      "projectFolder": "gui/react/react-lib"
+    },
+    {
+      "packageName": "@chaos-framework/react-gui",
+      "projectFolder": "gui/react/react-gui"
+    },
+    {
+      "packageName": "@chaos-framework/webgl-renderer",
+      "projectFolder": "gui/webgl/webgl-renderer"
     }
   ]
 }

@@ -1,0 +1,41 @@
+{
+  "name": "@chaos-framework/webgl-renderer",
+  "version": "0.0.1",
+  "description": "Simple WebGL 2D renderer for chaos-framework contexts.",
+  "main": "dist/cjs/index.js",
+  "module": "lib/index.js",
+  "exports": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "type": "module",
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaos-framework/chaos-framework.git",
+    "directory": "gui/webgl/webgl-renderer"
+  },
+  "author": "Andrew Peterson",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.11.4",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.11.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.0-beta"
+  },
+  "dependencies": {
+    "@chaos-framework/api": "../../api",
+    "@chaos-framework/core": "../../core",
+    "gl-matrix": "^3.4.3",
+    "ulidx": "^0.3.0"
+  }
+}

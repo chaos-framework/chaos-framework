@@ -1,0 +1,59 @@
+{
+  "name": "@chaos-framework/react-lib",
+  "version": "0.0.1",
+  "description": "React Context providers and hooks for the Chaos framework.",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "exports": "./dist/esm/index.js",
+  "types": "./dist/esm/lib/index.d.ts",
+  "type": "module",
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaos-framework/chaos-framework.git",
+    "directory": "gui/react/react-lib"
+  },
+  "author": "Andrew Peterson",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "17.0.2"
+  },
+  "devDependencies": {
+    "@open-wc/building-rollup": "^2.0.1",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^16.11.4",
+    "@types/react": "17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@types/uuid": "^8.3.1",
+    "chai": "^4.3.4",
+    "deepmerge": "^4.2.2",
+    "jsdom": "18.0.1",
+    "jsdom-global": "3.0.2",
+    "mocha": "^8.2.1",
+    "react": "17.0.2",
+    "react-dom": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.60.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "source-map-support": "^0.5.20",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.11.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.0-beta"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
+  }
+}

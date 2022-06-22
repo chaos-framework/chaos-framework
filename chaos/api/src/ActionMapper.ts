@@ -16,8 +16,8 @@ export class ActionMapper {
     // PUBLISH PLAYER ACTION
     if (action instanceof PublishPlayerAction) {
       // All players and the team the player may belong to
-      predicate = action.player;
-      const teamId = action.player.team?.id;
+      predicate = action.target;
+      const teamId = action.target.team?.id;
       add('players', Chaos.players);
       if (teamId !== undefined) {
         add(`${teamId}.players`, Chaos.players);
@@ -26,37 +26,37 @@ export class ActionMapper {
     }
     // PUBLISH ENTITY ACTION
     else if (action instanceof PublishEntityAction) {
-      predicate = action.entity;
+      predicate = action.target;
       // ALL
       add('entities', Chaos.entities);
       // WORLD
       // add(`${action.world.id}`, action.world.entities);
       // PLAYERS
-      for (const player of Array.from(action.entity.players.values())) {
+      for (const player of Array.from(action.target.players.values())) {
         add(`${player.id}.entities`, player.entities);
       }
       // TEAM
-      const teamId = action.entity.team?.id;
+      const teamId = action.target.team?.id;
       if (teamId !== undefined) {
-        add(`${teamId}.entities`, action.entity.team!.entities);
+        add(`${teamId}.entities`, action.target.team!.entities);
       }
       return arr;
     }
     // UNPUBLISH ENTITY ACTION
     else if (action instanceof UnpublishEntityAction) {
-      predicate = action.entity;
+      predicate = action.target;
       // ALL
       add('entities', Chaos.entities);
       // WORLD
       // add(`${action.entity.world!.id}`, action.entity.world!.entities);
       // PLAYERS
-      for (const player of Array.from(action.entity.players.values())) {
+      for (const player of Array.from(action.target.players.values())) {
         add(`${player.id}.entities`, player.entities);
       }
       // TEAM
-      const teamId = action.entity.team?.id;
+      const teamId = action.target.team?.id;
       if (teamId !== undefined) {
-        add(`${teamId}.entities`, action.entity.team!.entities);
+        add(`${teamId}.entities`, action.target.team!.entities);
       }
       return arr;
     }
