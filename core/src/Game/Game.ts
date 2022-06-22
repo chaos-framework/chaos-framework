@@ -1,16 +1,10 @@
-import {
-  CONNECTION,
-  Player,
-  EffectGenerator,
-  ProcessEffectGenerator,
-  ProcessEffect
-} from '../internal.js';
+import { CONNECTION, Player, ProcessEffectGenerator } from '../internal.js';
 
 export interface Game {
   initialize(option?: any): ProcessEffectGenerator;
   shutdown(): void;
   play(): ProcessEffectGenerator;
-  onPlayerConnect(msg: CONNECTION): EffectGenerator<ProcessEffect, Player>;
+  onPlayerConnect(msg: CONNECTION): ProcessEffectGenerator<Player>;
   onPlayerDisconnect(option: any): ProcessEffectGenerator;
 }
 

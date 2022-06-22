@@ -396,6 +396,10 @@
     {
       "packageName": "@chaos-framework/core",
       "projectFolder": "core"
+    },
+    {
+      "packageName": "@chaos-framework/socket-io",
+      "projectFolder": "io/socket-io"
     }
   ]
 }

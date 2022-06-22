@@ -9,16 +9,34 @@ import {
   Viewer,
   UnpublishEntityAction,
   EffectRunner,
-  ProcessEffectGenerator
+  ProcessEffectGenerator,
+  EffectGenerator
 } from '../internal.js';
 
-export async function processRunner(item: EffectRunner, broadcast = false): Promise<Action[]> {
+type processReturn = {
+  result?: any;
+  actions: Action[];
+};
+
+export async function processRunner(
+  item: EffectRunner | ProcessEffectGenerator,
+  broadcast = false
+): Promise<processReturn> {
+  if ((item as EffectRunner).run === undefined) {
+    item = {
+      run: async function* (force: boolean = false): EffectGenerator {
+        yield ['react', item];
+      }
+    };
+  }
   const followups = new Queue<EffectRunner>();
   const immediates = new Stack<[EffectRunner, ProcessEffectGenerator]>();
   const actionsThisProcess: Action[] = [];
+  let result; // This will store the first value *returned* by a generator
+  let firstActionCompleted = false;
   let actionsThisProcessAfterDelays: Action[] = [];
-  let currentActionOrEvent: EffectRunner = item;
-  let currentGenerator: ProcessEffectGenerator = item.run() as ProcessEffectGenerator;
+  let currentActionOrEvent: EffectRunner = item as EffectRunner;
+  let currentGenerator: ProcessEffectGenerator = currentActionOrEvent.run() as ProcessEffectGenerator;
   while (currentActionOrEvent !== undefined) {
     let next = await currentGenerator.next();
     // Handle whatever effect
@@ -51,6 +69,11 @@ export async function processRunner(item: EffectRunner, broadcast = false): Prom
       }
       next = await currentGenerator.next();
     }
+    // Cache the result, if any
+    if (!firstActionCompleted) {
+      result ??= next.value;
+      firstActionCompleted = true;
+    }
     // Track that this action was finished applying and broadcast to hooks that want to read it immediately
     if (currentActionOrEvent instanceof Action) {
       actionsThisProcess.push(currentActionOrEvent);
@@ -73,7 +96,7 @@ export async function processRunner(item: EffectRunner, broadcast = false): Prom
     broadcastToExecutionHooks(actionsThisProcessAfterDelays);
   }
   sendData();
-  return actionsThisProcess;
+  return { actions: actionsThisProcess };
 }
 
 function broadcastToActionHooks(action: Action) {
@@ -123,8 +146,7 @@ function queueForBroadcast(action: Action, to?: Player | Team) {
       for (const [, player] of Chaos.players) {
         if (
           (action.target &&
-            (player.entities.has(action.target.id) ||
-              player.sensedEntities.has(action.target.id))) ||
+            (player.entities.has(action.target.id) || player.sensedEntities.has(action.target.id))) ||
           (action.caster &&
             (player.entities.has(action.caster.id) || player.sensedEntities.has(action.caster.id)))
         ) {

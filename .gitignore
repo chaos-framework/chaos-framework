@@ -42,8 +42,8 @@ node_modules/
 jspm_packages/
 
 # Inner project builds
-*/lib/
-*/coverage/
+**/lib/
+**/coverage/
 
 # TypeScript v1 declaration files
 typings/
