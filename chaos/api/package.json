@@ -1,0 +1,41 @@
+{
+  "name": "@chaos-framework/api",
+  "version": "0.0.1",
+  "description": "Wraps a Chaos Framework game and provides interface for querying game state and hooks for updates.",
+  "main": "./lib/index.js",
+  "exports": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "type": "module",
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaos-framework/api.git"
+  },
+  "author": "Andrew Peterson",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.2.22",
+    "@types/jest": "^26.0.15",
+    "@types/lodash": "^4.14.176",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^16.11.4",
+    "chai": "^4.3.4",
+    "jest": "^26.6.3",
+    "mocha": "^8.2.1",
+    "source-map-support": "^0.5.20",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.11.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.0-beta"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "@chaos-framework/core": "workspace:*"
+  }
+}

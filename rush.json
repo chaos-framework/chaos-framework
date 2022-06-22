@@ -398,8 +398,16 @@
       "projectFolder": "chaos/core"
     },
     {
+      "packageName": "@chaos-framework/api",
+      "projectFolder": "chaos/api"
+    },
+    {
       "packageName": "@chaos-framework/std-lib",
       "projectFolder": "chaos/std-lib"
+    },
+    {
+      "packageName": "@chaos-framework/test-lib",
+      "projectFolder": "chaos/test-lib"
     },
     {
       "packageName": "@chaos-framework/socket-io",
