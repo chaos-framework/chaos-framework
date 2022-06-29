@@ -19,7 +19,9 @@
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
-  "scripts": {},
+  "scripts": {
+    "build": "echo \"nothing to build!\""
+  },
   "files": [
     "lib/**/*"
   ],
