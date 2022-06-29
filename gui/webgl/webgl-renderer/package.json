@@ -33,8 +33,8 @@
     "typescript": "^4.5.0-beta"
   },
   "dependencies": {
-    "@chaos-framework/api": "../../api",
-    "@chaos-framework/core": "../../core",
+    "@chaos-framework/api": "workspace:*",
+    "@chaos-framework/core": "workspace:*",
     "gl-matrix": "^3.4.3",
     "ulidx": "^0.3.0"
   }

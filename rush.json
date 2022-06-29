@@ -424,6 +424,10 @@
     {
       "packageName": "@chaos-framework/webgl-renderer",
       "projectFolder": "gui/webgl/webgl-renderer"
+    },
+    {
+      "packageName": "@chaos-framework/server-socket-io-cli",
+      "projectFolder": "server/server-socket-io-cli"
     }
   ]
 }

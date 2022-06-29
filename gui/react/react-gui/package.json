@@ -8,10 +8,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@chaos-framework/api": "file:../../api",
-    "@chaos-framework/core": "file:../../core",
-    "@chaos-framework/io": "file:../../io",
-    "@chaos-framework/react-lib": "file:../react-lib",
+    "@chaos-framework/core": "workspace:*",
     "@reduxjs/toolkit": "^1.6.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -27,7 +24,8 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
     "react-scripts": "4.0.3",
-    "typescript": "^4.1.6"
+    "typescript": "^4.1.6",
+    "@chaos-framework/api": "workspace:*"
   },
   "scripts": {
     "start": "craco start",

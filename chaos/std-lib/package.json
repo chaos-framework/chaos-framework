@@ -56,7 +56,7 @@
   "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
   "lint": "tslint -p tsconfig.json",
   "dependencies": {
-    "@chaos-framework/core": "file:../core",
+    "@chaos-framework/core": "workspace:*",
     "reflect-metadata": "^0.1.13"
   }
 }
