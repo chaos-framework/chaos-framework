@@ -422,6 +422,10 @@
       "projectFolder": "gui/react/react-gui"
     },
     {
+      "packageName": "@chaos-framework/react-admin-gui",
+      "projectFolder": "gui/react/react-admin-gui"
+    },
+    {
       "packageName": "@chaos-framework/webgl-renderer",
       "projectFolder": "gui/webgl/webgl-renderer"
     },
