@@ -3,7 +3,7 @@ import React from 'react';
 import meow from 'meow';
 import { render } from 'ink';
 import { Action, Chaos, isGame } from '@chaos-framework/core';
-import { IOServer } from '@chaos-framework/io';
+import { IOServer } from '@chaos-framework/socket-io';
 import { QueryAPI } from '@chaos-framework/api';
 
 import { parseCmdOptions, parseOptionsFile } from './Util/options.js';

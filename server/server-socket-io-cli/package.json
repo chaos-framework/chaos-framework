@@ -30,7 +30,11 @@
     "ink-spinner": "^4.0.3",
     "jsonfile": "^6.1.0",
     "meow": "^10.1.1",
-    "react": "17.0.2"
+    "react": "17.0.2",
+    "@chaos-framework/core": "workspace:*",
+    "@chaos-framework/api": "workspace:*",
+    "@chaos-framework/socket-io": "workspace:*",
+    "@chaos-framework/react-lib": "workspace:*"
   },
   "devDependencies": {
     "@types/jsonfile": "^6.0.1",

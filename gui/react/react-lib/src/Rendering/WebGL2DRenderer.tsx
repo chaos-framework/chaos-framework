@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useRef } from 'react';
-import WebGL2D from '@chaos-framework/webgl-2d';
+import WebGL2D from '@chaos-framework/webgl-renderer';
 import { useChaosAPI } from '..';
 
 export const WebGL2DRenderer = (props: any) => {

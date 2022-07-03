@@ -54,6 +54,9 @@
     "typescript": "^4.5.0-beta"
   },
   "dependencies": {
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "@chaos-framework/core": "workspace:*",
+    "@chaos-framework/api": "workspace:*",
+    "@chaos-framework/webgl-renderer": "workspace:*"
   }
 }

@@ -172,6 +172,7 @@ common/deploy/
 common/temp/
 common/autoinstallers/*/.npmrc
 **/.rush/temp/
+.pnpm-store
 
 # Heft
 .heft

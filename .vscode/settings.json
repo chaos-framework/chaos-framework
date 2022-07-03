@@ -1,21 +1,22 @@
 {
-    "javascript.preferences.importModuleSpecifierEnding": "js",
-    "typescript.preferences.importModuleSpecifierEnding": "js",
-      // Controls the rendering size of tabs in characters. Accepted values: "auto", 2, 4, 6, etc. If set to "auto", the value will be guessed when a file is opened.
-    "editor.tabSize": 2,
-    // Configure glob patterns for excluding files and folders in searches. Inherits all glob patterns from the file.exclude setting.
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/dist": true,
-        "**/lib": true,
-        "**/lib-amd": true,
-        "**/test/**/temp": false,
-        "**/temp": true,
-        "**/coverage": true
-    },
-    "files.associations": {
-        "**/package.json": "json",
-        "**/*.json": "jsonc"
-    }
+  "javascript.preferences.importModuleSpecifierEnding": "js",
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  // Controls the rendering size of tabs in characters. Accepted values: "auto", 2, 4, 6, etc. If set to "auto", the value will be guessed when a file is opened.
+  "editor.tabSize": 2,
+  // Configure glob patterns for excluding files and folders in searches. Inherits all glob patterns from the file.exclude setting.
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist": true,
+    "**/lib": true,
+    "**/lib-amd": true,
+    "**/test/**/temp": false,
+    "**/temp": true,
+    "**/coverage": true
+  },
+  "files.associations": {
+    "**/package.json": "json",
+    "**/*.json": "jsonc",
+    ".scratchpad": "plaintext"
+  }
 }
