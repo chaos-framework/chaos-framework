@@ -22,21 +22,33 @@ export async function processRunner(
   item: EffectRunner | ProcessEffectGenerator,
   broadcast = false
 ): Promise<processReturn> {
-  if ((item as EffectRunner).run === undefined) {
-    item = {
-      run: async function* (force: boolean = false): EffectGenerator {
-        yield ['react', item];
-      }
-    };
-  }
-  const followups = new Queue<EffectRunner>();
+  // Keep a running queue of immediate + followup actions
   const immediates = new Stack<[EffectRunner, ProcessEffectGenerator]>();
-  const actionsThisProcess: Action[] = [];
-  let result; // This will store the first value *returned* by a generator
+  const followups = new Queue<EffectRunner>();
+
+  // Ensure we can store the first generator's result value
+  let result;
   let firstActionCompleted = false;
+
+  // Keep track of all actions that happen, and also since the last delay if any
+  const actionsThisProcess: Action[] = [];
   let actionsThisProcessAfterDelays: Action[] = [];
-  let currentActionOrEvent: EffectRunner = item as EffectRunner;
-  let currentGenerator: ProcessEffectGenerator = currentActionOrEvent.run() as ProcessEffectGenerator;
+
+  let currentActionOrEvent: EffectRunner;
+  let currentGenerator: ProcessEffectGenerator;
+
+  // See if an action was passed in and convert it to an IMMEDIATE effect, otherwise take as-is
+  if ((item as EffectRunner).run === undefined) {
+    currentActionOrEvent = {
+      run: async function* (force: boolean = false): EffectGenerator {}
+    };
+    currentGenerator = item as ProcessEffectGenerator;
+  } else {
+    currentActionOrEvent = item as EffectRunner;
+    currentGenerator = currentActionOrEvent.run() as ProcessEffectGenerator;
+  }
+
+  // Loop through the first action and all reactions, followups, and delays
   while (currentActionOrEvent !== undefined) {
     let next = await currentGenerator.next();
     // Handle whatever effect
@@ -45,6 +57,7 @@ export async function processRunner(
       switch (effect[0]) {
         case 'IMMEDIATE':
           const [, actionOrEvent] = effect;
+          // Cache the in-progress action+generator for later, and immediately start running the next
           // TODO check for length of reactions stack and ignore if too deep?
           immediates.push([currentActionOrEvent, currentGenerator]);
           currentActionOrEvent = actionOrEvent;
@@ -69,11 +82,13 @@ export async function processRunner(
       }
       next = await currentGenerator.next();
     }
+
     // Cache the result, if any
     if (!firstActionCompleted) {
       result ??= next.value;
       firstActionCompleted = true;
     }
+
     // Track that this action was finished applying and broadcast to hooks that want to read it immediately
     if (currentActionOrEvent instanceof Action) {
       actionsThisProcess.push(currentActionOrEvent);
@@ -83,6 +98,7 @@ export async function processRunner(
         queueForBroadcast(currentActionOrEvent);
       }
     }
+
     // TODO tie queue of actions together here -- in other words let each action know what it actually followed
     // Pop last generator-in-progress OR next followup's generator
     if (immediates.length > 0) {
@@ -92,11 +108,13 @@ export async function processRunner(
       currentGenerator = currentActionOrEvent?.run() as ProcessEffectGenerator;
     }
   }
+
   if (broadcast === true) {
     broadcastToExecutionHooks(actionsThisProcessAfterDelays);
   }
+
   sendData();
-  return { actions: actionsThisProcess };
+  return { result, actions: actionsThisProcess };
 }
 
 function broadcastToActionHooks(action: Action) {

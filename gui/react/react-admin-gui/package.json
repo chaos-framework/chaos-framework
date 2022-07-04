@@ -15,7 +15,11 @@
   "dependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "@blueprintjs/core": "~4.5.1"
+    "@blueprintjs/core": "~4.5.1",
+    "@chaos-framework/core": "workspace:*",
+    "@chaos-framework/api": "workspace:*",
+    "@chaos-framework/react-lib": "workspace:*",
+    "@chaos-framework/socket-io": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

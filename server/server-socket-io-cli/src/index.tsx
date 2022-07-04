@@ -2,7 +2,7 @@
 import React from 'react';
 import meow from 'meow';
 import { render } from 'ink';
-import { Action, Chaos, isGame } from '@chaos-framework/core';
+import { Chaos, processRunner, isGame } from '@chaos-framework/core';
 import { IOServer } from '@chaos-framework/socket-io';
 import { QueryAPI } from '@chaos-framework/api';
 
@@ -63,21 +63,35 @@ if (path === undefined) {
   run(path, optionsFromCmd, optionsPath);
 }
 
+let server: IOServer;
+
+// Ensure we exit gracefully
+process.on('exit', () => {
+  if (server !== undefined) {
+    server.shutdown();
+  }
+});
+
 async function run(path: string, optionsFromCmd: any = {}, optionsFilePath?: string) {
-  // Import the game passed
   try {
+    // Import the game passed
     console.log(`Loading ${path}`);
     const game = (await import(path)) as any;
     if (!isGame(game)) {
       throw new Error(`Module specified at ${path} is not a proper Chaos game module.`);
     }
+    // Create the API reference
     const api = new QueryAPI(game);
-    const server = new IOServer(1980, game, { cors: { origin: 'http://localhost:3000', methods: ['GET', 'POST'] } });
+    // Start the server with the options passed
+    server = new IOServer(1980, game, { cors: { origin: 'http://localhost:3000', methods: ['GET', 'POST'] } });
     const optionsFromFile = optionsFilePath !== undefined ? await parseOptionsFile(optionsFilePath) : {};
     const options = Object.assign(optionsFromFile, optionsFromCmd);
     console.log(`Options: ${JSON.stringify(options)}`);
-    game.initialize(options);
-    game.play();
+    // Initialize the game
+    await processRunner(await game.initialize(options));
+    await processRunner(await game.play()); // TODO may want to let the user kick this off when ready
+    console.log(`Number of entities loaded: ${Chaos.entities.size}`);
+    // Render the UI and wait for exit signal
     render(<UI api={api} server={server} />, { patchConsole: false });
   } catch (err) {
     console.error((err as Error).message);
