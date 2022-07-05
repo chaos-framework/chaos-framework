@@ -355,7 +355,7 @@ export interface SerializedForClient {
   entities: Entity.SerializedForClient[];
 }
 
-export function DeserializeAsClient(serialized: SerializedForClient, clientPlayerId: string) {
+export function DeserializeAsClient(serialized: SerializedForClient, clientPlayerId?: string) {
   for (const team of serialized.teams) {
     const deserialized = Team.DeserializeAsClient(team);
     teams.set(deserialized.id, deserialized); // TODO addTeam

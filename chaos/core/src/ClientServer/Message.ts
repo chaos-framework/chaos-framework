@@ -4,6 +4,7 @@ import { Chaos } from '../internal.js';
 
 export interface CONNECTION {
   desiredUsername: string;
+  isAdmin?: boolean;
   options?: any;
 }
 
@@ -11,6 +12,8 @@ export interface CONNECTION_RESPONSE {
   connectedPlayerId: string;
   gameState: Chaos.SerializedForClient;
 }
+
+// TODO CONNECTION_ADMIN_RESPONSE -- admin will eventually get more data
 
 // In-game
 

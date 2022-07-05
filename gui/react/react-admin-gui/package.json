@@ -19,7 +19,14 @@
     "@chaos-framework/core": "workspace:*",
     "@chaos-framework/api": "workspace:*",
     "@chaos-framework/react-lib": "workspace:*",
-    "@chaos-framework/socket-io": "workspace:*"
+    "@chaos-framework/socket-io": "workspace:*",
+    "normalize.css": "~8.0.1",
+    "@reduxjs/toolkit": "~1.8.3",
+    "react-redux": "~8.0.2",
+    "buffer": "~6.0.3",
+    "vite-compatible-readable-stream": "~3.6.1",
+    "stream-browserify": "~3.0.0",
+    "@esbuild-plugins/node-globals-polyfill": "~0.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

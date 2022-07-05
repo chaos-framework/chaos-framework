@@ -15,38 +15,19 @@ import {
 
 import { ServerToClientEvents, ClientToServerEvents } from '../CommonIO.js';
 
-export class IOClient implements Client {
+export abstract class IOClient implements Client {
   id = ulid();
   broadcastQueue = new Queue<any>();
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
-  player: Player;
   loaded = false;
   connectionCallback?: (err?: string) => void; // optional callback to notify app that the loading has completed
 
-  constructor(uri: string, desiredUsername: string, connectionOptions: any) {
-    const query: CONNECTION = { desiredUsername };
+  constructor(uri: string, query: any, connectionOptions: any) {
     this.socket = io(uri, { query, autoConnect: false, ...connectionOptions });
-
-    this.player = new Player({ username: 'Awaiting Connection' });
-
-    this.initializeEvents();
+    this.initializeCommonEvents();
   }
 
-  initializeEvents() {
-    this.socket.on(MessageType.CONNECTION_RESPONSE, (response: CONNECTION_RESPONSE) => {
-      Chaos.DeserializeAsClient(response.gameState, response.connectedPlayerId);
-      const player = Chaos.players.get(response.connectedPlayerId);
-      if (player === undefined) {
-        this.disconnect();
-        throw new Error('Got a bad response from the server -- was assigned to a non-existant player.');
-      }
-      this.player = player;
-      this.loaded = true;
-      if (this.connectionCallback !== undefined) {
-        this.connectionCallback();
-      }
-    });
-
+  initializeCommonEvents() {
     this.socket.on(MessageType.ACTION, (json: any) => {
       try {
         console.log(JSON.stringify(json));

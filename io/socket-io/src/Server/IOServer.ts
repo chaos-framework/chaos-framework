@@ -16,6 +16,7 @@ import {
 
 import { ServerToClientEvents, ClientToServerEvents, InterServerEvents } from '../CommonIO.js';
 import { IOServerClient } from './IOServerClient.js';
+import { AdminClient } from '../internal.js';
 
 export class IOServer implements Server {
   // TODO upgrade socketio to use the new fourth param for CONNECTION interface
@@ -32,19 +33,27 @@ export class IOServer implements Server {
 
   initializeEvents() {
     const { server } = this;
+    let player: Player;
     server.on('connection', async (socket: Socket) => {
       const query = socket.handshake.query as unknown as CONNECTION;
-      const generator = this.game.onPlayerConnect(query);
-      const player = (await processRunner(generator as ProcessEffectGenerator<any>, true)).result as Player;
-      if (player === undefined) {
-        throw new Error('No player returned from onPlayerConnect');
+      if (query.isAdmin) {
+        const adminClient = new IOServerClient(socket);
+        Chaos.adminClients.set(adminClient.id, adminClient);
+        const gameState = Chaos.serializeForAdmin();
+        socket.emit('CONNECTION_RESPONSE', { gameState });
+      } else {
+        const generator = this.game.onPlayerConnect(query);
+        const player = (await processRunner(generator as ProcessEffectGenerator<any>, true)).result as Player;
+        if (player === undefined) {
+          throw new Error('No player returned from onPlayerConnect');
+        }
+        const gameState = Chaos.serializeForScope(player);
+        new IOServerClient(socket, player); // Just to assign client to player
+        console.log(
+          `Player connected from ${socket.handshake.address} with username ${query.desiredUsername}. Assigned player ID ${player.id}`
+        );
+        socket.emit('CONNECTION_RESPONSE', { gameState, player });
       }
-      const stateWithPlayer = Chaos.serializeForScope(player);
-      new IOServerClient(player, socket); // Just to assign client to player
-      console.log(
-        `User connected from ${socket.handshake.address} with username ${query.desiredUsername}. Assigned player ID ${player.id}`
-      );
-      socket.emit('CONNECTION_RESPONSE', stateWithPlayer);
     });
 
     // TODO on cast

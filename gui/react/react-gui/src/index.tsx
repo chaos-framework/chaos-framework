@@ -5,7 +5,7 @@ import App from './App';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import { IOClient } from '@chaos-framework/io';
+import { IOClient } from '@chaos-framework/socket-io';
 import { QueryAPI } from '@chaos-framework/api';
 import { ChaosProvider } from '@chaos-framework/react-lib';
 import Loading from './features/loading/loading';
