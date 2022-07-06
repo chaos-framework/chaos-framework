@@ -1,6 +1,6 @@
 import { Chunk, Layer } from '@chaos-framework/core';
 
-import { IndividualQuery, CollectionQuery, ChunkQuery } from '../internal.js';
+import { IndividualQuery, ChunkQuery } from '../internal.js';
 import { RelativeCollectionQuery } from './Query.ts.js';
 
 export class LayerQuery extends IndividualQuery<Layer<Chunk<any>>> {

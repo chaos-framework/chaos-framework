@@ -40,6 +40,9 @@ export class IOServer implements Server {
         const adminClient = new IOServerClient(socket);
         Chaos.adminClients.set(adminClient.id, adminClient);
         const gameState = Chaos.serializeForAdmin();
+        console.log(
+          `An admin connected from ${socket.handshake.address} with username ${query.desiredUsername}.`
+        );
         socket.emit('CONNECTION_RESPONSE', { gameState });
       } else {
         const generator = this.game.onPlayerConnect(query);

@@ -3,9 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
-//  Polyfill for node's buffer class
-import { Buffer } from 'buffer';
-window.Buffer = Buffer;
+// //  Polyfill for node's buffer class
+// import { Buffer } from 'buffer';
+// window.Buffer = Buffer;
 
 // Chaos essentials
 const { AdminClient } = await import('@chaos-framework/socket-io');
@@ -15,6 +15,9 @@ import { QueryAPI } from '@chaos-framework/api';
 // Local store
 import { store } from './Store/';
 import { setLoaded } from './Store/Loading/index.js';
+
+// Design system
+import { HotkeysProvider } from '@blueprintjs/core';
 
 // App imports
 import App from './App';
@@ -31,7 +34,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChaosProvider value={new QueryAPI()}>
       <Provider store={store}>
-        <App />
+        <HotkeysProvider>
+          <App />
+        </HotkeysProvider>
       </Provider>
     </ChaosProvider>
   </React.StrictMode>

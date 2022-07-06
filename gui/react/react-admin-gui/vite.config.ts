@@ -13,7 +13,8 @@ export default defineConfig({
   resolve: {
     alias: {
       /** browserify for @jbrowse/react-linear-genome-view */
-      stream: 'stream-browserify'
+      stream: 'stream-browserify',
+      crypto: 'crypto-browserify'
     }
   },
   optimizeDeps: {
@@ -30,5 +31,6 @@ export default defineConfig({
         })
       ]
     }
-  }
+  },
+  assetsInclude: ['**/*.png']
 });

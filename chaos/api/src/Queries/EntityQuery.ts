@@ -1,6 +1,6 @@
-import { Component, Entity, Player } from '@chaos-framework/core';
+import { Component, Entity, Player, World } from '@chaos-framework/core';
 
-import { IndividualQuery, CollectionQuery, PlayerQuery, ComponentQuery } from '../internal.js';
+import { IndividualQuery, CollectionQuery, PlayerQuery, ComponentQuery, WorldQuery } from '../internal.js';
 
 export class EntityQuery extends IndividualQuery<Entity> {
   constructor(entity: Entity) {
@@ -16,6 +16,10 @@ export class EntityQuery extends IndividualQuery<Entity> {
   }
 
   // TODO abilities
+
+  world() {
+    return new WorldQuery(this.value.world!);
+  }
 
   components() {
     return new CollectionQuery<Component, ComponentQuery>(

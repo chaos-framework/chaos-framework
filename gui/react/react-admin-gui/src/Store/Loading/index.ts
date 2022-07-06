@@ -21,6 +21,6 @@ export const loadingSlice = createSlice({
 });
 
 export const { setLoaded } = loadingSlice.actions;
-export const getLoadingStatus = (state: RootState) => state.loading;
+export const getLoadingStatus = (state: RootState) => state.loading.loading;
 
 export default loadingSlice.reducer;
