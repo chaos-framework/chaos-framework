@@ -12,6 +12,7 @@ type ColumnDefinition = {
   cellRenderer?: typeof CellRenderer;
   columnHeaderCellRenderer?: typeof ColumnHeaderCellRenderer;
   format?: (value: string) => string;
+  width?: number;
 };
 
 type QueryTableProps = { query: Query };
@@ -48,7 +49,12 @@ const EntityList: FC = () => {
     {
       key: 'inspect',
       name: '',
-      cellRenderer: (r: number, c: number) => <Cell key={`${r},${c}`}>hi</Cell>
+      cellRenderer: (r: number, c: number) => (
+        <Cell key={`${r},${c}`}>
+          <Button minimal small icon="search" />
+        </Cell>
+      ),
+      width: 45
     },
     {
       key: 'id',
@@ -95,7 +101,11 @@ const EntityList: FC = () => {
   ));
   return (
     <ListContainer title="Entities">
-      <Table2 enableRowResizing={true} numRows={actualPageLength}>
+      <Table2
+        enableRowResizing={false}
+        numRows={actualPageLength}
+        rowHeights={paginatedEntities.map(() => 24)}
+        columnWidths={columnDefinition.map((def) => def.width || null)}>
         {columns}
       </Table2>
       <span>{'' + entities.size}</span>
