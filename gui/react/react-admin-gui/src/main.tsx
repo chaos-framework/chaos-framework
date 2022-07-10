@@ -14,7 +14,7 @@ import { QueryAPI } from '@chaos-framework/api';
 
 // Local store
 import { store } from './Store/';
-import { setLoaded } from './Store/Loading/index.js';
+import { setLoaded } from './Features/LoadingWrapper/loadingSlice.js';
 
 // Design system
 import { HotkeysProvider } from '@blueprintjs/core';

@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import loadingReducer from './Loading';
-import navigationReducer from './Navigation';
+import loadingReducer from '../Features/LoadingWrapper/loadingSlice';
+import guiReducer from '../Features/GUI/guiSlice';
 
 export const store = configureStore({
   reducer: {
     loading: loadingReducer,
-    navigation: navigationReducer
+    gui: guiReducer
   }
 });
 

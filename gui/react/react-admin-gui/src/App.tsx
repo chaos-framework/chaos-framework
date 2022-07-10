@@ -1,35 +1,21 @@
-import { Spinner } from '@blueprintjs/core';
-import { useState } from 'react';
+import LoadingWrapper from './Features/LoadingWrapper/LoadingWrapper.js';
+import GUI from './Features/GUI/GUI.js';
+import Navbar from './Components/Structure/Navbar';
+
+import 'flexlayout-react/style/dark.css';
 
 import './App.scss';
-import Navbar from './Components/Structure/Navbar';
-import Renderer from './Components/Renderer';
-import { Window } from './Components/Structure/Window/Window.js';
-
-import { useAppSelector } from './Store/hooks.js';
-import { getLoadingStatus } from './Store/Loading';
-import { getMainWindow } from './Store/Navigation/index.js';
 
 function App() {
-  const loadingStatus = useAppSelector(getLoadingStatus);
-  const mainWindow = useAppSelector(getMainWindow);
-
-  if (loadingStatus === true) {
-    return <Spinner />;
-  } else if (typeof loadingStatus === 'string') {
-    return <span>Error: {loadingStatus}</span>;
-  } else {
-    return (
-      <div className="bp4-dark">
-        <Navbar />
+  return (
+    <div className="container bp4-dark">
+      <LoadingWrapper>
         <div className="container">
-          {/* Render the main admin window */}
-          <Window {...mainWindow} />
-          <Renderer />
+          <GUI />
         </div>
-      </div>
-    );
-  }
+      </LoadingWrapper>
+    </div>
+  );
 }
 
 export default App;

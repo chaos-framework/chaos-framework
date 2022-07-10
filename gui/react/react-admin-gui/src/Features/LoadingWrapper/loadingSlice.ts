@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '..';
+import { createSlice } from '@reduxjs/toolkit';
+
+import { RootState } from '../../Store';
 
 export interface LoadingState {
   loading: boolean | string;
@@ -12,7 +13,6 @@ const initialState: LoadingState = {
 export const loadingSlice = createSlice({
   name: 'counter',
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     setLoaded: (state) => {
       state.loading = false;

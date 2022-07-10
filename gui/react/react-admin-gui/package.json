@@ -31,7 +31,9 @@
     "sass": "~1.53.0",
     "@blueprintjs/table": "~4.3.1",
     "react-mosaic": "~0.0.20",
-    "react-dnd": "~16.0.1"
+    "react-dnd": "~16.0.1",
+    "react-mosaic-component": "~5.1.0",
+    "flexlayout-react": "~0.7.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
