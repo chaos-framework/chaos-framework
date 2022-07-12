@@ -17,14 +17,7 @@ const initialState = {
 export const guiSlice = createSlice({
   name: 'gui',
   initialState,
-  reducers: {
-    setDockRef: (state, action: PayloadAction<any>) => {
-      state.dockRef = action.payload;
-    }
-  }
+  reducers: {}
 });
-
-export const { setDockRef } = guiSlice.actions;
-export const getDockRef = (state: RootState) => state.gui.dockRef;
 
 export default guiSlice.reducer;

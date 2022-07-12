@@ -6,3 +6,28 @@
 .fullHeight {
   height: 100%;
 }
+
+.dock-top .dock-bar {
+  background-color: #252a31;
+}
+
+.dock-tab {
+  background-color: #2f343c;
+  // min-width: 100px;
+}
+
+.dock-tab > div {
+  min-width: 100px;
+}
+
+.dock-tab-active {
+  color: #2d72d2;
+}
+
+.dock-panel {
+  background-color: #1c2127;
+}
+
+.dock-content-animated {
+  transition: none;
+}

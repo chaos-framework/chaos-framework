@@ -14,13 +14,16 @@ const defaultLayout: LayoutData = {
         },
         children: [
           {
+            id: 'main',
             tabs: [
               {
                 id: 'admin',
                 title: 'Admin',
-                content: <div>hey</div>
+                content: <div>Connected</div>,
+                closable: true
               }
-            ]
+            ],
+            panelLock: {}
           }
         ]
       }

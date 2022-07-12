@@ -1,15 +1,12 @@
-import React, { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import DockLayout from 'rc-dock';
 
-import defaultLayout from './defaultLayout.js';
-import 'rc-dock/dist/rc-dock-dark.css';
-
 import Navbar from './Navbar/Navbar.js';
+import defaultLayout from './defaultLayout.js';
 
+import 'rc-dock/dist/rc-dock-dark.css';
 import './GUI.scss';
-import { useAppDispatch } from '../../Store/hooks.js';
-import { setDockRef } from './guiSlice.js';
 
 const useEffectOnce = (effect: any) => {
   useEffect(effect, []);
@@ -23,19 +20,19 @@ const useMount = (fn: () => any) => {
 
 const GUI: FC<any> = (props: any) => {
   const dockRef = useRef(null);
-  const dispatch = useAppDispatch();
+  const [dockState, updateDockRefState] = useState(undefined);
+
   useMount(() => {
-    if (!dockRef.current) {
+    if (!dockRef?.current) {
       return;
     }
-    console.log('Setting dockRef.');
-    dispatch(setDockRef(dockRef.current));
+    updateDockRefState(dockRef.current);
   });
 
   return (
     <div className="GUI">
-      <Navbar dock={dockRef} />
-      <DockLayout ref={dockRef} style={{ height: '100%', width: '100%' }} defaultLayout={defaultLayout} />;
+      <Navbar dock={dockState} />
+      <DockLayout ref={dockRef} style={{ height: '100%', width: '100%' }} defaultLayout={defaultLayout} />
     </div>
   );
 };
