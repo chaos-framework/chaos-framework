@@ -1,8 +1,5 @@
 import LoadingWrapper from './Features/LoadingWrapper/LoadingWrapper.js';
 import GUI from './Features/GUI/GUI.js';
-import Navbar from './Components/Structure/Navbar';
-
-import 'flexlayout-react/style/dark.css';
 
 import './App.scss';
 
