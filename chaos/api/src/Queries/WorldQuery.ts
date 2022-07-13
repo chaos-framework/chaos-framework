@@ -2,7 +2,7 @@ import { Chunk, Component, Entity, Layer, World } from '@chaos-framework/core';
 
 import { IndividualQuery, CollectionQuery, ComponentQuery, LayerQuery } from '../internal.js';
 import { EntityQuery } from './EntityQuery.js';
-import { RelativeCollectionQuery } from './Query.ts.js';
+import { RelativeCollectionQuery } from './Query.js';
 
 export class WorldQuery extends IndividualQuery<World> {
   constructor(world: World) {

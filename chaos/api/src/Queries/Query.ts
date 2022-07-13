@@ -49,6 +49,10 @@ export class CollectionQuery<T, C> implements Query, Iterable<[string, C]> {
   map(fn: (value: [string, C], index?: number) => any): [string, C][] {
     return Array.from(this.iterator()).map(fn);
   }
+
+  values(): C[] {
+    return [...Array.from(this.iterator()).map((item) => item[1])];
+  }
 }
 
 export class RelativeCollectionQuery<T, C> implements Query, Iterable<[string, C]> {

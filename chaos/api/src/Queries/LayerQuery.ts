@@ -1,7 +1,7 @@
 import { Chunk, Layer } from '@chaos-framework/core';
 
 import { IndividualQuery, ChunkQuery } from '../internal.js';
-import { RelativeCollectionQuery } from './Query.ts.js';
+import { RelativeCollectionQuery } from './Query.js';
 
 export class LayerQuery extends IndividualQuery<Layer<Chunk<any>>> {
   constructor(layer: Layer<Chunk<any>>, ref: string) {

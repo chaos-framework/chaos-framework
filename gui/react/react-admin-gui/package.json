@@ -34,7 +34,8 @@
     "react-dnd": "~16.0.1",
     "react-mosaic-component": "~5.1.0",
     "flexlayout-react": "~0.7.3",
-    "rc-dock": "~3.2.10"
+    "rc-dock": "~3.2.10",
+    "@blueprintjs/select": "~4.4.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

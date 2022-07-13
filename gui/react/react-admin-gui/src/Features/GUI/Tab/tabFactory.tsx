@@ -1,10 +1,10 @@
 import {} from 'react';
-import EntityList from '../../../Components/Entities/EntityTable/EntityTable.js';
+import EntityList from '../../Entities/EntityTable/EntityTable.js';
 import Tab from './Tab.js';
 import { TabData } from 'rc-dock';
 import { uniqueId } from '@blueprintjs/core/lib/esm/common/utils/jsUtils.js';
 import { EntityQuery } from '@chaos-framework/api';
-import EntityInspector from '../../../Components/Entities/EntityInspector/EntityInspector.js';
+import EntityInspector from '../../Entities/EntityInspector/EntityInspector.js';
 
 export const entityListTabFactory = (searchParams?: any): TabData => {
   const id = uniqueId('gui');

@@ -646,7 +646,8 @@ export class Entity implements ComponentContainer, Printable {
       omnipotent: this.omnipotent,
       world: this.world?.id,
       components,
-      glyph: this.glyph
+      glyph: this.glyph,
+      team: this.team?.id
     };
   }
 }
@@ -705,6 +706,7 @@ export namespace Entity {
         if (t === undefined) {
           throw new Error(`Team for Entity ${id} is not defined locally.`);
         }
+        deserialized.team = t;
       }
       if (components !== undefined) {
         for (let c of components) {
