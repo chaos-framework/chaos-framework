@@ -1,15 +1,17 @@
-import { FC, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import { Navbar, Alignment, Button } from '@blueprintjs/core';
 import { Table2, Column, Cell, ICellRenderer, ICellProps } from '@blueprintjs/table';
 import { useChaos, useChaosNested, useChaosAPI } from '@chaos-framework/react-lib';
 import ListContainer from '../../Structure/ListContainer/ListContainer.js';
 import { EntityQuery, Query } from '@chaos-framework/api';
 import { PaginatedChaosCollection } from '../../../Util/Pagination.js';
+import { DockContextType } from 'rc-dock';
+import { entityInspectorTabFactory } from '../../../Features/GUI/Tab/tabFactory.js';
 
 type ColumnDefinition = {
   key: string;
   name: string;
-  cellRenderer?: typeof CellRenderer;
+  cellRenderer?: typeof defaultCellRenderer;
   columnHeaderCellRenderer?: typeof ColumnHeaderCellRenderer;
   format?: (value: string) => string;
   width?: number;
@@ -28,7 +30,7 @@ const NestedQueryValue: FC<NestedQueryValueProps> = (props: NestedQueryValueProp
   return <span>{value}</span>;
 };
 
-const CellRenderer = (rowIndex: number, columnIndex: number, value: string | number) => (
+const defaultCellRenderer = (rowIndex: number, columnIndex: number, value: string | number) => (
   <Cell key={`${rowIndex},${columnIndex}`}>
     <span>{value}</span>
   </Cell>
@@ -36,8 +38,13 @@ const CellRenderer = (rowIndex: number, columnIndex: number, value: string | num
 
 const ColumnHeaderCellRenderer = (columnIndex: number) => <Cell>{columnIndex}</Cell>;
 
-const EntityList: FC = () => {
+interface EntityListProps {
+  tabId?: string;
+}
+
+const EntityList: FC<EntityListProps> = (props: EntityListProps) => {
   const api = useChaosAPI();
+  const context = useContext(DockContextType);
   const [entities, query] = useChaos(api.entities());
   const [pageNumber] = useState(0);
   const [pageLength] = useState(40);
@@ -51,7 +58,18 @@ const EntityList: FC = () => {
       name: '',
       cellRenderer: (r: number, c: number) => (
         <Cell key={`${r},${c}`}>
-          <Button minimal small icon="search" />
+          <Button
+            minimal
+            small
+            icon="search"
+            onClick={() =>
+              context.dockMove(
+                entityInspectorTabFactory(paginatedEntities[r]),
+                props.tabId || null,
+                'after-tab'
+              )
+            }
+          />
         </Cell>
       ),
       width: 45
@@ -92,9 +110,9 @@ const EntityList: FC = () => {
       key={definition.key}
       name={definition.name}
       cellRenderer={
-        definition.cellRenderer ||
+        (definition.cellRenderer as ICellRenderer) ||
         ((rowIndex: number, cellIndex: number) =>
-          CellRenderer(startingIndex + rowIndex, cellIndex, 'undefined'))
+          defaultCellRenderer(startingIndex + rowIndex, cellIndex, 'undefined'))
       }
       columnHeaderCellRenderer={definition.columnHeaderCellRenderer}
     />
