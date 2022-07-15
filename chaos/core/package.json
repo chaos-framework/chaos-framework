@@ -66,6 +66,7 @@
     "queue-typescript": "^1.0.1",
     "reflect-metadata": "^0.1.13",
     "stack-typescript": "^1.0.4",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "ulid": "~2.3.0"
   }
 }

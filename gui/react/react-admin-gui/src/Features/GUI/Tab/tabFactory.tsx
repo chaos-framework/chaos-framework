@@ -1,5 +1,5 @@
 import {} from 'react';
-import EntityList from '../../Entities/EntityTable/EntityTable.js';
+import EntityList from '../../Entities/EntityList/EntityList.js';
 import Tab from './Tab.js';
 import { TabData } from 'rc-dock';
 import { uniqueId } from '@blueprintjs/core/lib/esm/common/utils/jsUtils.js';

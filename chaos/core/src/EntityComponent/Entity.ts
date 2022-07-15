@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { ulid } from 'ulid';
 import {
   Chaos,
   Vector,
@@ -71,7 +71,7 @@ export class Entity implements ComponentContainer, Printable {
   glyph: GlyphCode347;
 
   constructor({
-    id = uuid(),
+    id = ulid(),
     name = 'Unnamed Entity',
     metadata,
     team,
