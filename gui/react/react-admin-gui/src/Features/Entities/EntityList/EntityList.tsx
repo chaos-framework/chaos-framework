@@ -20,7 +20,7 @@ const EntityList: FC<EntityListProps> = (props: EntityListProps) => {
       key: 'link',
       name: '',
       link: true,
-      width: 70
+      width: 110
     },
     {
       key: 'id',
@@ -40,7 +40,7 @@ const EntityList: FC<EntityListProps> = (props: EntityListProps) => {
     <Table
       tabId={props.tabId}
       columns={columnDefinition}
-      data={query}
+      collectionQuery={query}
       tabFactory={entityInspectorTabFactory}
     />
   );

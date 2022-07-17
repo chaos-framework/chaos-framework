@@ -1,11 +1,10 @@
 import { Socket } from 'socket.io';
-import { ulid } from 'ulid';
 import { Queue } from 'queue-typescript';
 
-import { Client, MessageType, Player } from '@chaos-framework/core';
+import { Client, MessageType, Player, chaosUniqueId } from '@chaos-framework/core';
 
 export class IOServerClient implements Client {
-  id = ulid();
+  id = chaosUniqueId();
   broadcastQueue = new Queue<any>();
   isAdmin: boolean = false;
 

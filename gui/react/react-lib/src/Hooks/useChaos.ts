@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useChaosAPI } from '../internal.js';
 
+const random = () => uuidv4();
+
 export type QueryGenerator<T extends Query> = () => T;
 
 export function useChaos<T extends Query>(query: T): [any, T] {
@@ -20,16 +22,17 @@ export function useChaos<T extends Query>(query: T): [any, T] {
     forceRerender({});
     callback(value);
   };
-  // Empty array as second arg ensures this will get called once
+  // Empty array as second arg ensures this will get called once ?? Or I need to pass query values to rerender on query changes
   useEffect(() => {
     const uuid = uuidv4();
     // Subscribe to the API for updates on this value
     const path = api.addSubsciption(query, uuid, unMemoized);
-    //
+    // Call the unmemoized state setter in case this is an update
+    callback(query.value);
     // Leave callback to unsubscribe when calling component is unmounted
     return () => api.removeSubscription(path);
     // Leverage alsoUpdateOn to also refresh the original value, if specified
-  }, []);
+  }, [query.path, query.value]);
   // Return actual value itself for this render
   return [value, query];
 }

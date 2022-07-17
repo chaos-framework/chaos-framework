@@ -67,6 +67,7 @@
     "reflect-metadata": "^0.1.13",
     "stack-typescript": "^1.0.4",
     "uuid": "^8.3.2",
-    "ulid": "~2.3.0"
+    "ulid": "~2.3.0",
+    "ulidx": "~0.3.0"
   }
 }

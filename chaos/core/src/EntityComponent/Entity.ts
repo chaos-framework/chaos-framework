@@ -1,4 +1,3 @@
-import { ulid } from 'ulid';
 import {
   Chaos,
   Vector,
@@ -36,7 +35,8 @@ import {
   cachesSensedEntities,
   GlyphCode347,
   NestedSet,
-  NestedSetChanges
+  NestedSetChanges,
+  chaosUniqueId
 } from '../internal.js';
 
 export class Entity implements ComponentContainer, Printable {
@@ -71,7 +71,7 @@ export class Entity implements ComponentContainer, Printable {
   glyph: GlyphCode347;
 
   constructor({
-    id = ulid(),
+    id = chaosUniqueId(),
     name = 'Unnamed Entity',
     metadata,
     team,

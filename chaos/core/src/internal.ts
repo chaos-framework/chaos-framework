@@ -75,3 +75,4 @@ export * from './Util/Nest/NestedSetChanges.js';
 export * from './Util/WithMetadata.js';
 export * from './Math/Bresenham.js';
 export * from './Util/Glyphs.js';
+export * from './Util/UniqueID.js';

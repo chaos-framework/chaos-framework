@@ -1,12 +1,11 @@
-import { ulid } from 'ulidx';
-import { Vector, World } from '@chaos-framework/core';
+import { Vector, World, chaosUniqueId } from '@chaos-framework/core';
 import { QueryAPI, WorldQuery } from '@chaos-framework/api';
 
 import Mesh from './3D/Mesh';
 import Texture from './3D/Texture';
 
 export default class WorldMeshLibrary {
-  id = ulid();
+  id = chaosUniqueId();
   layers: any = {};
   query: WorldQuery;
 

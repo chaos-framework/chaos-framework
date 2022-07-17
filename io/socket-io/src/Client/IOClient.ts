@@ -1,7 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import { ulid } from 'ulid';
 import { Queue } from 'queue-typescript';
-
 import {
   Client,
   Player,
@@ -10,13 +8,14 @@ import {
   MessageType,
   Chaos,
   ActionDeserializer,
-  processRunner
+  processRunner,
+  chaosUniqueId
 } from '@chaos-framework/core';
 
 import { ServerToClientEvents, ClientToServerEvents } from '../CommonIO.js';
 
 export abstract class IOClient implements Client {
-  id = ulid();
+  id = chaosUniqueId();
   broadcastQueue = new Queue<any>();
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
   loaded = false;

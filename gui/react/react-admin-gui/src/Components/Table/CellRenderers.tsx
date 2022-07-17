@@ -31,6 +31,7 @@ export const LinkCellRenderer =
       <Cell key={`${rowIndex},${columnIndex}`} interactive={true}>
         <Button minimal small icon="eye-open" onClick={() => tabUpdater(query)} />
         <Button minimal small icon="share" onClick={() => tabOpener(query)} />
+        <Button minimal small icon="locate" onClick={() => tabUpdater(query)} />
       </Cell>
     );
   };
