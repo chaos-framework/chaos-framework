@@ -80,6 +80,10 @@ export default class WebGL2D {
     }
   }
 
+  resize(newSize: Vector) {
+    this.camera.setViewport(newSize);
+  }
+
   render(delta: number) {
     const { gl } = this;
 

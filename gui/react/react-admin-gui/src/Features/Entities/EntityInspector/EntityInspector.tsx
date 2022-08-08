@@ -1,8 +1,11 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { FormGroup, InputGroup } from '@blueprintjs/core';
 import { useChaos } from '@chaos-framework/react-lib';
 import { EntityQuery } from '@chaos-framework/api';
 import TeamSelect from '../../Teams/TeamSelect.js';
+import ComponentList from '../../Components/ComponentList/ComponentList.js';
+
+import './EntityInspector.scss';
 
 interface EntityInspectorProps {
   query: EntityQuery;
@@ -22,6 +25,7 @@ const EntityInspector: FC<EntityInspectorProps> = (props: EntityInspectorProps) 
       </FormGroup>
       <FormGroup label="Attributes" labelFor="text-input"></FormGroup>
       <FormGroup label="Components" labelFor="text-input"></FormGroup>
+      <ComponentList data={query.components()} />
     </div>
   );
 };

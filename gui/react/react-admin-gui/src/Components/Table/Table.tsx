@@ -83,12 +83,14 @@ const Table = (props: TableProps) => {
   return (
     <>
       <Table2
+        className="Table"
         enableRowResizing={false}
         numRows={actualPageLength}
         rowHeights={paginatedEntries.map(() => 24)}
         columnWidths={props.columns.map((def) => def.width || null)}
         cellRendererDependencies={[pageLength, currentPage, totalPages]}
-        renderMode={RenderMode.NONE}>
+        // renderMode={RenderMode.NONE}
+        enableColumnResizing>
         {columns}
       </Table2>
       <Paginator
