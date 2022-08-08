@@ -3,7 +3,7 @@ import { useChaos, useChaosAPI } from '@chaos-framework/react-lib';
 import { CollectionQuery, EntityQuery, Query } from '@chaos-framework/api';
 import { Entity } from '@chaos-framework/core';
 import { DockContextType } from 'rc-dock';
-import { entityInspectorTabFactory } from '../../GUI/Tab/tabFactory.js';
+import { entityInspectorTabFactory, rendererTabFactory } from '../../GUI/Tab/tabFactory.js';
 import Table, { BaseTableProps, ColumnDefinition } from '../../../Components/Table/Table.js';
 
 interface EntityListProps extends BaseTableProps {
@@ -42,6 +42,7 @@ const EntityList: FC<EntityListProps> = (props: EntityListProps) => {
       columns={columnDefinition}
       collectionQuery={query}
       tabFactory={entityInspectorTabFactory}
+      rendererFactory={rendererTabFactory}
     />
   );
 };

@@ -1,4 +1,6 @@
 import { Vector, World } from '@chaos-framework/core';
+import { runInThisContext } from 'vm';
+import Mat4Uniform from './3D/Uniforms/Mat4Uniform.js';
 
 interface OrthographicBounds {
   top: number;
@@ -53,10 +55,17 @@ export default class Camera {
     }
   }
 
-  setViewport(dimensions: Vector) {
+  setViewport(dimensions: Vector, projectionMatrix: Mat4Uniform): void {
     if (!dimensions.equals(this.viewport)) {
+      console.log('setting projection matrix', dimensions, this.center, this.zoom);
       this.viewport = dimensions.copy();
       this.modified = true;
+      const tileDimensions = new Vector(dimensions.x / this.zoom, dimensions.y / this.zoom);
+      const left = this.center.x - tileDimensions.x / 2;
+      const bottom = this.center.y - tileDimensions.y / 2;
+      console.log(left, bottom, dimensions.x / this.zoom, dimensions.y / this.zoom);
+      // Update the view / projection as needed
+      projectionMatrix.reset().orthographic(left, bottom, tileDimensions.x, tileDimensions.y).set();
     }
   }
 
@@ -105,7 +114,7 @@ export default class Camera {
     return [bottomLeft, topRight];
   }
 
-  getOrthographicBounds(viewport: Vector) {}
+  setOrthographicBounds(viewport: Vector, matrix: Mat4Uniform): void {}
 
   clampCenter() {
     if (this.center.x < 0) {

@@ -15,6 +15,7 @@ export default class WebGL2D {
   worldMeshLibrary!: WorldMeshLibrary;
 
   camera: Camera;
+  aspectRatio!: number;
 
   texturedShader: TexturedShader2D;
   quad: Mesh;
@@ -25,6 +26,9 @@ export default class WebGL2D {
   previousRenderTimestamp: DOMHighResTimeStamp = performance.now();
   rotation: number = 0;
 
+  previousWidth: number;
+  previousHeight: number;
+
   constructor(public canvas: HTMLCanvasElement, public api: QueryAPI) {
     const gl = canvas.getContext('webgl');
     if (gl === null) {
@@ -32,7 +36,14 @@ export default class WebGL2D {
     }
     this.gl = gl;
 
-    this.camera = new Camera(new Vector(4, 4), 16, new Vector(this.canvas.width, this.canvas.height));
+    this.camera = new Camera(
+      new Vector(4, 4),
+      16,
+      new Vector(this.canvas.clientWidth, this.canvas.clientHeight)
+    );
+
+    this.previousWidth = this.canvas.clientWidth;
+    this.previousHeight = this.canvas.clientHeight;
 
     this.texturedShader = new TexturedShader2D(gl);
     this.quad = Mesh.quad(gl);
@@ -40,8 +51,7 @@ export default class WebGL2D {
     this.glyphTexture = new Texture(gl, 'http://localhost:3000/Unknown_curses_12x12.png');
     this.worldTexture = new Texture(gl, 'http://localhost:3000/tiles.png');
     this.texturedShader.bindTexture(this.glyphTexture);
-    this.texturedShader.projection.orthographic(0, 0, 16, 16).set();
-
+    this.resize(new Vector(this.canvas.width, this.canvas.height));
     const worlds = api.worlds().value;
     this.setWorld(Array.from(worlds.values())[0]);
 
@@ -81,7 +91,11 @@ export default class WebGL2D {
   }
 
   resize(newSize: Vector) {
-    this.camera.setViewport(newSize);
+    this.canvas.width = newSize.x;
+    this.canvas.height = newSize.y;
+    this.aspectRatio = newSize.x / newSize.y;
+    this.texturedShader.use();
+    this.camera.setViewport(newSize, this.texturedShader.projection);
   }
 
   render(delta: number) {
@@ -99,14 +113,21 @@ export default class WebGL2D {
     // Clear the color buffer with specified clear color
     gl.clear(gl.COLOR_BUFFER_BIT);
     // Set the viewport size based on the current HTML canvas size
-    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-    // // Enable blending
+    if (this.previousWidth !== this.canvas.clientWidth || this.previousHeight !== this.canvas.clientHeight) {
+      console.log('GL size change!');
+      this.resize(new Vector(this.canvas.clientWidth, this.canvas.clientHeight));
+      this.previousWidth = this.canvas.clientWidth;
+      this.previousHeight = this.canvas.clientHeight;
+    }
+    gl.viewport(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+    // Enable blending
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     // TODO z buffer blending
 
     if (this.world !== undefined) {
       // Render world
+      this.texturedShader.use();
       this.texturedShader.bindTexture(this.worldTexture);
       for (const [, chunkPosition] of this.camera.chunksInView) {
         const tilePosition = chunkPosition.toRealSpace();

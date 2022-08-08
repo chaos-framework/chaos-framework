@@ -24,14 +24,19 @@ export const DefaultExternalCellRenderer =
   };
 
 export const LinkCellRenderer =
-  (data: any[], tabUpdater: (arg: any) => void, tabOpener: (arg: any) => void) =>
+  (
+    data: any[],
+    tabUpdater: (arg: any) => void,
+    tabOpener: (arg: any) => void,
+    renderer: (args: any) => void
+  ) =>
   (rowIndex: number, columnIndex: number) => {
     const query = data[rowIndex];
     return (
       <Cell key={`${rowIndex},${columnIndex}`} interactive={true}>
-        <Button minimal small icon="eye-open" onClick={() => tabUpdater(query)} />
+        <Button minimal small icon="eye-open" onClick={() => tabOpener(query)} />
         <Button minimal small icon="share" onClick={() => tabOpener(query)} />
-        <Button minimal small icon="locate" onClick={() => tabUpdater(query)} />
+        <Button minimal small icon="locate" onClick={() => renderer(query)} />
       </Cell>
     );
   };

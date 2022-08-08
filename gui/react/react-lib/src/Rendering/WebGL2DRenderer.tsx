@@ -14,5 +14,5 @@ export const WebGL2DRenderer = (props: any) => {
     return () => renderer.shutdown();
   });
 
-  return <canvas style="width: 400px; height: 300px;" ref={canvasRef} />;
+  return <canvas style={{ width: '100%', height: '100%' }} ref={canvasRef} />;
 };

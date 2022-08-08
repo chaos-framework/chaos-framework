@@ -34,6 +34,7 @@ export interface TableProps<T = GenericCollectionQuery> extends BaseTableProps {
   collectionQuery: T;
   columns: ColumnDefinition[];
   tabFactory?: (...props: any) => TabData;
+  rendererFactory?: (...props: any) => TabData;
 }
 
 const Table = (props: TableProps) => {
@@ -67,6 +68,9 @@ const Table = (props: TableProps) => {
           },
           (value: IndividualQuery<any>) => {
             context.dockMove(props.tabFactory!(value), props.tabId!, 'after-tab');
+          },
+          (value: IndividualQuery<any>) => {
+            context.dockMove(props.rendererFactory!(value), props.tabId!, 'after-tab');
           }
         )
       : DefaultExternalCellRenderer(paginatedEntries, definition.key, definition.formatter);

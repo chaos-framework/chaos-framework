@@ -8,11 +8,13 @@ import Vec2Attribute from '../../../Attributes/Vec2Attribute.js';
 import Texture from '../../../Texture.js';
 import Sampler from '../../../Uniforms/Sampler.js';
 import Mesh from '../../../Mesh.js';
+import Vec2Uniform from '../../../Uniforms/Vec2Uniform.js';
 
 export default class TexturedShader2D extends ShaderProgram {
   position: Vec3Attribute;
   uv: Vec2Attribute;
   model: Mat4Uniform;
+  // scale: Vec2Uniform;
   projection: Mat4Uniform;
   sampler: Sampler;
 
