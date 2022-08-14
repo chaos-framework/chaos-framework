@@ -39,7 +39,7 @@ import {
   chaosUniqueId
 } from '../internal.js';
 
-export class Entity implements ComponentContainer, Printable {
+export class Entity<T extends Component[] = Component[]> implements ComponentContainer, Printable {
   readonly id: string;
   name: string;
   metadata = new Map<string, string | number | boolean | undefined>();
@@ -50,7 +50,7 @@ export class Entity implements ComponentContainer, Printable {
 
   properties: Map<string, Property> = new Map<string, Property>();
 
-  components: ComponentCatalog = new ComponentCatalog(this); // all components
+  components: ComponentCatalog<T> = new ComponentCatalog<T>(this); // all components
 
   abilities: Map<string, Grant[]> = new Map<string, Grant[]>();
 
@@ -70,15 +70,27 @@ export class Entity implements ComponentContainer, Printable {
   asset?: string;
   glyph: GlyphCode347;
 
-  constructor({
-    id = chaosUniqueId(),
-    name = 'Unnamed Entity',
-    metadata,
-    team,
-    active = false,
-    omnipotent = false,
-    glyph = GlyphCode347['?']
-  }: Entity.ConstructorParams = {}) {
+  constructor(
+    {
+      id = chaosUniqueId(),
+      name = 'Unnamed Entity',
+      metadata,
+      team,
+      active = false,
+      omnipotent = false,
+      glyph = GlyphCode347['?'],
+      permanentComponents = [] as Component[] as T
+    }: {
+      id?: string;
+      name?: string;
+      team?: Team;
+      metadata?: { [key: string]: string | number | boolean | undefined };
+      active?: boolean;
+      omnipotent?: boolean;
+      glyph?: GlyphCode347;
+      permanentComponents?: T;
+    } = { permanentComponents: [] as Component[] as T }
+  ) {
     // TODO
     this.id = id;
     this.name = name;
@@ -654,7 +666,7 @@ export class Entity implements ComponentContainer, Printable {
 
 // tslint:disable-next-line: no-namespace
 export namespace Entity {
-  export interface ConstructorParams {
+  export type ConstructorParams<T extends Component[]> = {
     id?: string;
     name?: string;
     team?: Team;
@@ -662,7 +674,8 @@ export namespace Entity {
     active?: boolean;
     omnipotent?: boolean;
     glyph?: GlyphCode347;
-  }
+    permanentComponents?: T;
+  };
 
   export interface Serialized {}
 
@@ -692,7 +705,8 @@ export namespace Entity {
         metadata,
         active,
         omnipotent,
-        glyph
+        glyph,
+        permanentComponents: [] as Component[]
       });
       deserialized.position = Vector.deserialize(json.position);
       if (worldId !== undefined) {

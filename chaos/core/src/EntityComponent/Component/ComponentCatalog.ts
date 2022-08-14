@@ -19,7 +19,7 @@ const validSubscriptions = {
   game: [] as string[]
 };
 
-export class ComponentCatalog {
+export class ComponentCatalog<T extends Component[] = Component[]> {
   // Scope of parent object -- ie being owned by a World would be 'world'
   parentScope: Scope;
 
@@ -28,6 +28,7 @@ export class ComponentCatalog {
 
   // Components by name
   byName: Map<string, Component[]> = new Map<string, Component[]>();
+  byType: Map<string, Component[]> = new Map<string, Component[]>();
 
   // Components from other containers subscribed (listening/interacting) to this ComponentContainer
   subscribers = new Map<string, Subscription>();
@@ -60,6 +61,11 @@ export class ComponentCatalog {
       this.byName.set(component.name, [component]);
     } else {
       this.byName.get(component.name)!.push(component);
+    }
+    if (!this.byType.has(component.constructor.name)) {
+      this.byName.set(component.constructor.name, [component]);
+    } else {
+      this.byName.get(component.constructor.name)!.push(component);
     }
     this.createComponentSubscriptions(component);
     component.parent = this.parent;
@@ -232,21 +238,31 @@ export class ComponentCatalog {
   }
 
   // MISC
-  is(componentName: string): boolean {
-    return this.has(componentName);
+  is(component: string | { new (...args: any[]): Component }): boolean {
+    return this.has(component);
   }
 
-  has(componentName: string): boolean {
-    // TODO optimize
-    return this.byName.has(componentName);
+  has(component: string | { new (...args: any[]): Component }): boolean {
+    return this.byName.has(typeof component === 'string' ? component : component.name);
   }
 
-  get(componentName: string): Component | undefined {
-    const components = this.byName.get(componentName);
-    if (components && components.length > 0) {
-      return components[0];
+  get(componentName: string): Component | undefined;
+  get<G extends T[number]>(classRef: { new (...args: any[]): G }): G;
+  get<G extends Component>(c: string | { new (...args: any[]): G }): Component | G | undefined {
+    if (typeof c === 'string') {
+      const components = this.byName.get(c);
+      if (components && components.length > 0) {
+        return components[0];
+      } else {
+        return undefined;
+      }
     } else {
-      return undefined;
+      const components = this.byName.get(c.name);
+      if (components && components.length > 0) {
+        return components[0];
+      } else {
+        return undefined;
+      }
     }
   }
 
