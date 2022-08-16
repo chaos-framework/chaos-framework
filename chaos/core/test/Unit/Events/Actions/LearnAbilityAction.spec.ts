@@ -15,10 +15,10 @@ describe('LearnAbilityAction Action', () => {
     ability = new EmptyAbility();
   });
 
-  it('Grants an ability to an entity upon execution', () => {
+  it('Grants an ability to an entity upon execution', async () => {
     const action = new LearnAbilityAction({ caster: e, target: e, ability });
     expect(e.can(ability.name)).to.be.false;
-    action.runPrivate();
+    await action.runPrivate();
     expect(e.can(ability.name)).to.be.true;
   });
 });

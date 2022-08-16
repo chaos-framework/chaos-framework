@@ -13,7 +13,9 @@ import {
   Scope,
   NestedChanges,
   NestedSet,
-  NestedSetChanges
+  NestedSetChanges,
+  EffectGenerator,
+  Effect
 } from '../internal.js';
 
 export class Team implements Viewer, ComponentContainer {
@@ -61,8 +63,8 @@ export class Team implements Viewer, ComponentContainer {
     }
   }
 
-  handle(phase: string, action: Action) {
-    this.components.handle(phase, action);
+  async *handle(phase: string, action: Action): EffectGenerator {
+    yield* this.components.handle(phase, action);
   }
 
   sense(a: Action): boolean {

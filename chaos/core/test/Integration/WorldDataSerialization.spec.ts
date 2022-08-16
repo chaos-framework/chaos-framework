@@ -19,10 +19,10 @@ import { earthAtmosphere } from '../Mocks/Layers/Atmosphere.js';
 describe('Serialzing world data', function () {
   let earth: Earth;
   let activeEntity: Entity;
-  beforeEach(function () {
+  beforeEach(async function () {
     earth = new Earth();
     activeEntity = new Entity({ active: true });
-    activeEntity.publish({ world: earth, position: new Vector(0, 0) }).runPrivate();
+    await activeEntity.publish({ world: earth, position: new Vector(0, 0) }).runPrivate();
   });
 
   it('Should serialize data for individual chunks correctly', function () {

@@ -16,10 +16,10 @@ describe('ForgetAbilityAction Action', () => {
     e._learn(ability, undefined, undefined);
   });
 
-  it('Removes an ability from an entity upon execution', () => {
+  it('Removes an ability from an entity upon execution', async () => {
     const action = new ForgetAbilityAction({ caster: e, target: e, ability });
     expect(e.can(ability.name)).to.be.true;
-    action.runPrivate();
+    await action.runPrivate();
     expect(e.can(ability.name)).to.be.false;
   });
 });

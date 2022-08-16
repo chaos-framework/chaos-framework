@@ -18,7 +18,7 @@ describe('World Changing Actions', () => {
     e._publish(room1, room1.stageLeft);
   });
 
-  it('Can move entities between worlds', () => {
+  it('Can move entities between worlds', async () => {
     expect(e.world).to.equal(room1);
     const a = new ChangeWorldAction({
       target: e,
@@ -26,7 +26,7 @@ describe('World Changing Actions', () => {
       to: room2,
       position: room2.stageLeft
     });
-    a.runPrivate();
+    await a.runPrivate();
     expect(e.world).to.equal(room2);
     expect(e.position.equals(room2.stageLeft)).to.be.true;
   });

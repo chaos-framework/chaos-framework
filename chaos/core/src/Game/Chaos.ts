@@ -14,7 +14,8 @@ import {
   CAST,
   ExecutionHook,
   ActionHook,
-  Vector
+  Vector,
+  EffectGenerator
 } from '../internal.js';
 
 export let id: string = 'Unnamed Game'; // Name of loaded game
@@ -226,8 +227,8 @@ export function detach(c: Component): void {
   components.removeComponent(c);
 }
 
-export function handle(phase: string, action: Action) {
-  components.handle(phase, action);
+export async function* handle(phase: string, action: Action): EffectGenerator {
+  yield* components.handle(phase, action);
 }
 
 export function sense(a: Action): boolean {

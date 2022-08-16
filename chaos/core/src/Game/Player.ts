@@ -14,7 +14,8 @@ import {
   NestedChanges,
   Viewer,
   NestedSet,
-  NestedSetChanges
+  NestedSetChanges,
+  EffectGenerator
 } from '../internal.js';
 
 export class Player implements Viewer, ComponentContainer {
@@ -94,10 +95,9 @@ export class Player implements Viewer, ComponentContainer {
     }
   }
 
-  handle(phase: string, action: Action) {
-    this.components.handle(phase, action);
+  async *handle(phase: string, action: Action): EffectGenerator {
+    yield* this.components.handle(phase, action);
   }
-
   disconnect() {}
 
   ownEntity(

@@ -36,10 +36,14 @@ import {
   GlyphCode347,
   NestedSet,
   NestedSetChanges,
-  chaosUniqueId
+  chaosUniqueId,
+  Effect,
+  EffectGenerator
 } from '../internal.js';
 
-export class Entity<T extends Component[] = Component[]> implements ComponentContainer, Printable {
+export class Entity<A extends readonly string[] = readonly string[], C extends Component[] = Component[]>
+  implements ComponentContainer, Printable
+{
   readonly id: string;
   name: string;
   metadata = new Map<string, string | number | boolean | undefined>();
@@ -48,9 +52,9 @@ export class Entity<T extends Component[] = Component[]> implements ComponentCon
   perceives = false; // when assigned to a player/team it contributes to visibility
   omnipotent = false; // listens to every action in the game
 
-  properties: Map<string, Property> = new Map<string, Property>();
+  properties: Map<string, Property>; // = new Map<string, Property>();
 
-  components: ComponentCatalog<T> = new ComponentCatalog<T>(this); // all components
+  components: ComponentCatalog<C> = new ComponentCatalog<C>(this); // all components
 
   abilities: Map<string, Grant[]> = new Map<string, Grant[]>();
 
@@ -79,7 +83,7 @@ export class Entity<T extends Component[] = Component[]> implements ComponentCon
       active = false,
       omnipotent = false,
       glyph = GlyphCode347['?'],
-      permanentComponents = [] as Component[] as T
+      permanentComponents = [] as Component[] as C
     }: {
       id?: string;
       name?: string;
@@ -88,10 +92,9 @@ export class Entity<T extends Component[] = Component[]> implements ComponentCon
       active?: boolean;
       omnipotent?: boolean;
       glyph?: GlyphCode347;
-      permanentComponents?: T;
-    } = { permanentComponents: [] as Component[] as T }
+      permanentComponents?: C;
+    } = { permanentComponents: [] as Component[] as C }
   ) {
-    // TODO
     this.id = id;
     this.name = name;
     this.active = active;
@@ -107,6 +110,8 @@ export class Entity<T extends Component[] = Component[]> implements ComponentCon
       this.team = team;
       team._addEntity(this);
     }
+    this.properties = new Map<string, Property>();
+    this._attachAll(permanentComponents);
   }
 
   print(): string {
@@ -138,12 +143,14 @@ export class Entity<T extends Component[] = Component[]> implements ComponentCon
     }
   }
 
-  handle(phase: string, action: Action) {
-    this.components.handle(phase, action);
+  async *handle(phase: string, action: Action): EffectGenerator {
+    yield* this.components.handle(phase, action);
   }
 
-  getProperty(k: string): Property | undefined {
-    return this.properties.get(k);
+  getProperty(name: A[number]): Property;
+  getProperty(name: string): Property | undefined;
+  getProperty(name: string | A[number]): Property | undefined {
+    return this.properties.get(name);
   }
 
   tag(tag: string) {
@@ -744,4 +751,4 @@ export type PublishedEntity = {
 
 export type EntityOnTeam = {
   team: Team;
-} & Entity;
+} & PublishedEntity;

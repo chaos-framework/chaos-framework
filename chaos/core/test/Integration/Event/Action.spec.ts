@@ -37,8 +37,8 @@ describe('Action Integration', () => {
       });
     });
 
-    it('Assumes caster can sense everything, regardless of sensory components', () => {
-      action.runPrivate();
+    it('Assumes caster can sense everything, regardless of sensory components', async () => {
+      await action.runPrivate();
       expect(action.sensors.has(mover.id)).to.be.true;
       expect(action.sensors.get(mover.id)).to.be.true;
     });

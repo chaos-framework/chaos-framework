@@ -143,7 +143,7 @@ export abstract class Action<
     if (!this.skipPrePhases) {
       for (const phase of ['before', ...this.getPrePhases()]) {
         for (const [, listener] of this.listeners) {
-          listener.handle(phase, this);
+          yield* listener.handle(phase, this);
         }
       }
     }
@@ -156,13 +156,7 @@ export abstract class Action<
       (this.permitted && this.feasabilityCallback !== undefined ? this.feasabilityCallback(this) : true) ||
       force
     ) {
-      const generator = this.apply();
-      let res = await generator.next();
-      while (!res.done) {
-        yield res.value;
-        res = await generator.next();
-      }
-      this.applied = res.value;
+      yield* this.apply();
     }
 
     // Generate terminal message
@@ -172,7 +166,7 @@ export abstract class Action<
     if (!this.skipPostPhases) {
       for (const phase of [...this.getPostPhases(), 'after']) {
         for (const [, listener] of this.listeners) {
-          listener.handle(phase, this);
+          yield* listener.handle(phase, this);
         }
       }
     }
@@ -230,26 +224,28 @@ export abstract class Action<
     const { caster, target } = this;
 
     // Add the caster, caster's world, player, teams, and nearby entities (if caster specified)
-    if (caster instanceof Entity) {
+    if (caster !== undefined) {
       this.addListener(caster);
-      // Add all nearby entities and the world itself, if caster is published to a world
-      if (caster.world !== undefined) {
-        caster.world.getEntitiesWithinRadius(caster.position, listenRadius).map((entity) => {
-          if (entity.id !== caster.id && entity.id !== target?.id) {
-            this.addListener(entity);
-          }
-        });
-        this.addListener(caster.world);
-      }
+      if (caster instanceof Entity) {
+        // Add all nearby entities and the world itself, if caster is published to a world
+        if (caster.world !== undefined) {
+          caster.world.getEntitiesWithinRadius(caster.position, listenRadius).map((entity) => {
+            if (entity.id !== caster.id && entity.id !== target?.id) {
+              this.addListener(entity);
+            }
+          });
+          this.addListener(caster.world);
+        }
 
-      // Add all players that own this entity
-      for (const [, player] of caster.players) {
-        this.addListener(player);
-      }
+        // Add all players that own this entity
+        for (const [, player] of caster.players) {
+          this.addListener(player);
+        }
 
-      // Add all teams that this entity belongs to
-      if (caster.team !== undefined) {
-        this.addListener(caster.team);
+        // Add all teams that this entity belongs to
+        if (caster.team !== undefined) {
+          this.addListener(caster.team);
+        }
       }
     }
 
@@ -261,23 +257,26 @@ export abstract class Action<
     // TODO add players + teams of target(s)
 
     // Add the target world, nearby entities, and target itself.. if the target !== the caster
-    if (target instanceof Entity && (target as any) !== caster) {
-      if (target.world !== undefined) {
-        this.addListener(target.world);
-        target.world.getEntitiesWithinRadius(target.position, listenRadius).forEach((entity) => {
-          this.addListener(entity);
-        });
-      }
+    if (target !== undefined && (target as any) !== caster) {
       this.addListener(target);
+      if (target instanceof Entity) {
+        // Add nearby entities and the world itself
+        if (target.world !== undefined) {
+          target.world.getEntitiesWithinRadius(target.position, listenRadius).forEach((entity) => {
+            this.addListener(entity);
+          });
+          this.addListener(target.world);
+        }
 
-      // Add all players that own this entity
-      for (const [, player] of target.players) {
-        this.addListener(player);
-      }
+        // Add all players that own this entity
+        for (const [, player] of target.players) {
+          this.addListener(player);
+        }
 
-      // Add all teams that this entity belongs to
-      if (target.team !== undefined) {
-        this.addListener(target.team);
+        // Add all teams that this entity belongs to
+        if (target.team !== undefined) {
+          this.addListener(target.team);
+        }
       }
     }
 

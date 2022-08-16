@@ -30,9 +30,9 @@ describe('DetachComponentAction', () => {
     target.unpublish();
   });
 
-  it('Removes a component from an entity upon execution', () => {
+  it('Removes a component from an entity upon execution', async () => {
     const action = new DetachComponentAction({ target, component });
-    action.runPrivate();
+    await action.runPrivate();
     expect(target.has(component.name)).to.be.false;
   });
 

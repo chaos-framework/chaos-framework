@@ -67,19 +67,17 @@ describe('World and chunk visibility tracking', function () {
 
   describe('Entities and worlds tracking visible chunks', function () {
     describe('Active entities', function () {
-      it('Tracks chunks when published to a world', function () {
+      it('Tracks chunks when published to a world', async function () {
         // Publish and cache changes
         const action = entityA1.publish({
           world: streamingWorld,
           position: Vector.zero()
         });
-        action.runPrivate();
+        await action.runPrivate();
         const zeroInWorld = streamingWorld.getFullChunkID(0, 0);
         // Test changes
-        expect(action.chunkVisibilityChanges!.added['world'][streamingWorld.id].has(zeroInWorld)).to
-          .be.true;
-        expect(action.chunkVisibilityChanges!.added['entity'][entityA1.id].has(zeroInWorld)).to.be
-          .true;
+        expect(action.chunkVisibilityChanges!.added['world'][streamingWorld.id].has(zeroInWorld)).to.be.true;
+        expect(action.chunkVisibilityChanges!.added['entity'][entityA1.id].has(zeroInWorld)).to.be.true;
         // Make sure changes also applied to nodes themselves
         expect(entityA1.visibleChunks.has(zeroInWorld)).to.be.true;
         expect(teamA.visibleChunks.has(zeroInWorld)).to.be.true;
@@ -89,7 +87,7 @@ describe('World and chunk visibility tracking', function () {
 
       it('Tracks and forgets chunks when moving through a world', async function () {
         // Publish
-        entityA1.publish({ world: streamingWorld, position: Vector.zero() }).runPrivate();
+        await entityA1.publish({ world: streamingWorld, position: Vector.zero() }).runPrivate();
         // Will not have any changes for moves within the same chunk
         let move = entityA1.move({ to: new Vector(1, 1) });
         await move.runPrivate();
@@ -118,11 +116,9 @@ describe('World and chunk visibility tracking', function () {
         await unpublish.runPrivate();
         // Test changes
         const zeroInWorld = streamingWorld.getFullChunkID(0, 0);
-        expect(
-          unpublish.chunkVisibilityChanges.removed['world'][streamingWorld.id].has(zeroInWorld)
-        ).to.be.true;
-        expect(unpublish.chunkVisibilityChanges.removed['entity'][entityA1.id].has(zeroInWorld)).to
-          .be.true;
+        expect(unpublish.chunkVisibilityChanges.removed['world'][streamingWorld.id].has(zeroInWorld)).to.be
+          .true;
+        expect(unpublish.chunkVisibilityChanges.removed['entity'][entityA1.id].has(zeroInWorld)).to.be.true;
         // Make sure changes also applied to the world node
         // TODO should the changes include the deleted node?
         expect(entityA1.visibleChunks.has(zeroInWorld)).to.be.false;
@@ -191,19 +187,13 @@ describe('World and chunk visibility tracking', function () {
 
       it('Does not persist chunks when an active entity leaves the world', async function () {
         await entityA1.publish({ world: streamingWorld, position: Vector.zero() }).runPrivate();
-        await inactiveEntity
-          .publish({ world: streamingWorld, position: Vector.zero() })
-          .runPrivate();
+        await inactiveEntity.publish({ world: streamingWorld, position: Vector.zero() }).runPrivate();
         await entityA1.unpublish().runPrivate();
-        expect(streamingWorld.visibleChunks.set).to.not.include(
-          streamingWorld.getFullChunkID(0, 0)
-        );
+        expect(streamingWorld.visibleChunks.set).to.not.include(streamingWorld.getFullChunkID(0, 0));
       });
 
       it('Can be published to a world but is immediately unloaded after', async function () {
-        await inactiveEntity
-          .publish({ world: streamingWorld, position: Vector.zero() })
-          .runPrivate();
+        await inactiveEntity.publish({ world: streamingWorld, position: Vector.zero() }).runPrivate();
         entityA1.unpublish().runPrivate();
         expect(inactiveEntity.visibleChunks.set).to.not.contain(fixedWorld1.getFullChunkID(0, 0));
       });
@@ -212,11 +202,7 @@ describe('World and chunk visibility tracking', function () {
     describe.skip('Making an inactive published entity active', function () {});
   });
 
-  function setupTestsForPerception(
-    grouping: Chaos.PerceptionGrouping,
-    viewerA: Viewer,
-    viewerB: Viewer
-  ) {
+  function setupTestsForPerception(grouping: Chaos.PerceptionGrouping, viewerA: Viewer, viewerB: Viewer) {
     describe.skip(`${grouping} perception grouping`, function () {});
   }
   // setupTestsForPerception('player', playerA1, playerB);

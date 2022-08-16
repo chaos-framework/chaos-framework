@@ -29,9 +29,9 @@ describe('AttachComponentAction', () => {
     target.unpublish();
   });
 
-  it('Attaches a component to an entity upon execution', () => {
+  it('Attaches a component to an entity upon execution', async () => {
     const action = new AttachComponentAction({ target, component });
-    action.runPrivate();
+    await action.runPrivate();
     expect(target.has(component.name)).to.be.true;
   });
 

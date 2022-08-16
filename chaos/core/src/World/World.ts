@@ -16,7 +16,8 @@ import {
   ByteLayer,
   NestedSetChanges,
   NestedSet,
-  NestedChanges
+  NestedChanges,
+  EffectGenerator
 } from '../internal.js';
 
 const CHUNK_WIDTH = 16;
@@ -153,9 +154,7 @@ export abstract class World implements ComponentContainer, Listener {
           // TODO SCOPE need to MASSIVELY optimize this vvv
           entity.visibleChunks.replace(
             new Set<string>(
-              this.getChunksInView(to.toChunkSpace(), viewDistance).map((v) =>
-                this.getFullChunkID(v.x, v.y)
-              )
+              this.getChunksInView(to.toChunkSpace(), viewDistance).map((v) => this.getFullChunkID(v.x, v.y))
             ),
             undefined,
             changes
@@ -168,11 +167,7 @@ export abstract class World implements ComponentContainer, Listener {
     return false;
   }
 
-  addTemporaryViewer(
-    position: Vector,
-    active: boolean,
-    changes = new NestedSetChanges()
-  ): NestedSet {
+  addTemporaryViewer(position: Vector, active: boolean, changes = new NestedSetChanges()): NestedSet {
     const viewDistance = active ? Chaos.viewDistance : Chaos.inactiveViewDistance;
     const chunksInView = this.getChunksInView(position, viewDistance);
     for (const chunk of chunksInView) {
@@ -293,8 +288,8 @@ export abstract class World implements ComponentContainer, Listener {
 
   // TODO setTile and _setTile
 
-  handle(phase: string, action: Action) {
-    this.components.handle(phase, action);
+  async *handle(phase: string, action: Action): EffectGenerator {
+    yield* this.components.handle(phase, action);
   }
 
   isInBounds(position: Vector) {
