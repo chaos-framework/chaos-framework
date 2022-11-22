@@ -12,6 +12,7 @@ import {
   ProcessEffectGenerator,
   EffectGenerator
 } from '../internal.js';
+import { sleep } from '../Util/Sleep.js';
 
 type processReturn = {
   result?: any;
@@ -76,7 +77,7 @@ export async function processRunner(
           sendData();
           const timePassedWhileBroadcasting = Date.now() - start;
           if (timePassedWhileBroadcasting < delay) {
-            await setTimeout(() => {}, delay - timePassedWhileBroadcasting);
+            await sleep(delay - timePassedWhileBroadcasting);
           }
           break;
       }

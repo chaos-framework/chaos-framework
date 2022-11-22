@@ -1,8 +1,8 @@
 import { Vector, World, chaosUniqueId } from '@chaos-framework/core';
 import { QueryAPI, WorldQuery } from '@chaos-framework/api';
 
-import Mesh from './3D/Mesh';
-import Texture from './3D/Texture';
+import Mesh from './3D/Mesh.js';
+import Texture from './3D/Texture.js';
 
 export default class WorldMeshLibrary {
   id = chaosUniqueId();

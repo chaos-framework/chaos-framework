@@ -11,7 +11,7 @@ class MockComponent extends Component {
   }
 }
 
-describe('TargetsOneOfMyPlayersEntities Decorator', function () {
+describe('TargetsMyPlayers Decorator', function () {
   let entityA: Entity;
   let entityB: Entity;
   let entityAB: Entity; // owned by both
@@ -35,27 +35,18 @@ describe('TargetsOneOfMyPlayersEntities Decorator', function () {
   });
 
   it('Ignores actions not targetting entity owned by parent entity owners', async function () {
-    let generator = await component.test.call(
-      component,
-      entityB.addProperty({ name: 'HP', current: 0 })
-    );
+    let generator = await component.test.call(component, entityB.addProperty({ name: 'HP', current: 0 }));
     let next = await generator.next();
     expect(next.value).to.not.exist;
     expect(next.done).to.be.true;
   });
 
   it('Runs actions targetting entity owned by parent entity owners', async function () {
-    let generator = await component.test.call(
-      component,
-      entityA.addProperty({ name: 'HP', current: 0 })
-    );
+    let generator = await component.test.call(component, entityA.addProperty({ name: 'HP', current: 0 }));
     let next = await generator.next();
     expect(next.value).to.exist;
     expect(next.done).to.be.false;
-    generator = await component.test.call(
-      component,
-      entityAB.addProperty({ name: 'HP', current: 0 })
-    );
+    generator = await component.test.call(component, entityAB.addProperty({ name: 'HP', current: 0 }));
     next = await generator.next();
     expect(next.value).to.exist;
     expect(next.done).to.be.false;

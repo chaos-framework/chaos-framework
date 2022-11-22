@@ -1,4 +1,4 @@
-import { Layer } from '@chaos-framework/core';
+import { ArrayChunk, Layer } from '@chaos-framework/core';
 
 interface BasicTile {
   name: string;
@@ -30,13 +30,15 @@ export enum BasicTiles {
   Wall
 }
 
-export default class BasicLayer extends Layer<BasicTile> {
+class BasicChunk extends ArrayChunk<BasicTile> {}
+
+export default class BasicLayer extends Layer<BasicChunk> {
   constructor(fill: number) {
     super(BasicLayer.getTileFromInt(fill));
   }
 
   setTile(x: number, y: number, tile: number) {
-    super.setTile(x, y, BasicLayer.getTileFromInt(tile));
+    super.set(x, y, BasicLayer.getTileFromInt(tile));
   }
 
   static getTileFromInt(i: number) {

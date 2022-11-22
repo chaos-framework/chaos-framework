@@ -21,7 +21,11 @@ export default class Camera {
 
   world?: World;
 
-  constructor(public center: Vector = new Vector(0, 0), public zoom: number = 16, public viewport: Vector) {
+  constructor(
+    public center: Vector = new Vector(0, 0),
+    public zoom: number = 16,
+    public viewport: Vector = new Vector(640, 480)
+  ) {
     // Keep within reasonable constraints
     this.clampCenter();
     this.clampZoom();

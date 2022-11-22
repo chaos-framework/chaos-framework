@@ -5,7 +5,7 @@ import Mesh from './3D/Mesh.js';
 import Camera from './Camera.js';
 import TexturedShader2D from './3D/Shaders/2D/Textured/shader.js';
 import Texture from './3D/Texture.js';
-import Atlas from './3D/Atlas';
+import Atlas from './3D/Atlas.js';
 import WorldMeshLibrary from './WorldMeshLibrary.js';
 
 export default class WebGL2D {

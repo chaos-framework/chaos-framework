@@ -63,9 +63,9 @@ export class ComponentCatalog<T extends Component[] = Component[]> {
       this.byName.get(component.name)!.push(component);
     }
     if (!this.byType.has(component.constructor.name)) {
-      this.byName.set(component.constructor.name, [component]);
+      this.byType.set(component.constructor.name, [component]);
     } else {
-      this.byName.get(component.constructor.name)!.push(component);
+      this.byType.get(component.constructor.name)!.push(component);
     }
     this.createComponentSubscriptions(component);
     component.parent = this.parent;
@@ -128,10 +128,10 @@ export class ComponentCatalog<T extends Component[] = Component[]> {
     const map = this.subscriberFunctionsByPhase.get(phase);
     if (map === undefined) {
       const newMap = new Map<string, ActionHandler>();
-      newMap.set(subscription.component.id, subscription.fn);
+      newMap.set(component.id, subscription.fn);
       this.subscriberFunctionsByPhase.set(phase, newMap);
     } else {
-      map.set(subscription.component.id, subscription.fn);
+      map.set(component.id, subscription.fn); // TODO does this mean a component using the same phase in one func will overwrite the other?
     }
   }
 
@@ -231,8 +231,9 @@ export class ComponentCatalog<T extends Component[] = Component[]> {
   async *handle(phase: string, action: Action): EffectGenerator {
     const functions = this.subscriberFunctionsByPhase.get(phase);
     if (functions !== undefined) {
-      for (const [, fn] of functions) {
-        yield* fn(action);
+      for (const [componentId, fn] of functions) {
+        const component = Chaos.allComponents.get(componentId);
+        yield* fn.call(component, action);
       }
     }
   }
@@ -257,7 +258,7 @@ export class ComponentCatalog<T extends Component[] = Component[]> {
         return undefined;
       }
     } else {
-      const components = this.byName.get(c.name);
+      const components = this.byType.get(c.name);
       if (components && components.length > 0) {
         return components[0];
       } else {

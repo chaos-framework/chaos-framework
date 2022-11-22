@@ -89,10 +89,9 @@ async function run(path: string, optionsFromCmd: any = {}, optionsFilePath?: str
     console.log(`Options: ${JSON.stringify(options)}`);
     // Initialize the game
     await processRunner(await game.initialize(options));
-    await processRunner(await game.play()); // TODO may want to let the user kick this off when ready
-    console.log(`Number of entities loaded: ${Chaos.entities.size}`);
     // Render the UI and wait for exit signal
     render(<UI api={api} server={server} />, { patchConsole: false });
+    processRunner(game.play(), true); // TODO may want to let the user kick this off when ready
   } catch (err) {
     console.error((err as Error).message);
     process.exit(0);

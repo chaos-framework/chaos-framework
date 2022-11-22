@@ -1,4 +1,11 @@
-import { Chaos, Player, CONNECTION, CONNECTION_RESPONSE, Game } from '@chaos-framework/core';
+import {
+  Chaos,
+  Player,
+  CONNECTION,
+  CONNECTION_RESPONSE,
+  Game,
+  ProcessEffectGenerator
+} from '@chaos-framework/core';
 
 // TODO move this to (new) standard testing lib? feel like I'll be rewriting this a bit..
 export default class MockGame implements Game {
@@ -8,22 +15,25 @@ export default class MockGame implements Game {
   // onPlayerConnect(msg: CONNECTION): ProcessEffectGenerator<Player>;
   // onPlayerDisconnect(option: any): ProcessEffectGenerator;
 
-  initialize(option: any): void {}
-
-  onPlayerConnect(msg: CONNECTION): CONNECTION_RESPONSE {
-    return {
-      connectedPlayerId: 'test',
-      gameState: Chaos.serializeForScope(new Player())
-    };
+  async *initialize(options: any = {}): ProcessEffectGenerator {
+    return true;
   }
 
-  onPlayerDisconnect(options: any): void {}
+  async *onPlayerConnect(msg: CONNECTION): ProcessEffectGenerator<Player> {
+    throw new Error('Not defined.');
+  }
+
+  async *onPlayerDisconnect(options: any): ProcessEffectGenerator<boolean> {
+    return true;
+  }
 
   reset() {
     Chaos.reset();
   }
 
-  play() {}
+  async *play(): ProcessEffectGenerator<boolean> {
+    return true;
+  }
 
   shutdown() {}
 }

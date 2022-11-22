@@ -2,9 +2,9 @@ import { expect } from 'chai';
 import 'mocha';
 import { AddPropertyAction, Component, EffectGenerator, Entity } from '@chaos-framework/core';
 
-import { OnPhase, ForAction, Successful, Permitted, TargetsMe } from '../src/index.js';
+import { OnPhase, ForAction, Successful, Permitted, TargetsMe } from '../index.js';
 
-describe.skip('Conditional Decorator order and composition', function () {
+describe('Conditional Decorator order and composition', function () {
   it('Uses conditional guards in prototype handlers regardless of decorator order', async function () {
     class Mock extends Component {
       @OnPhase('react')
@@ -30,10 +30,7 @@ describe.skip('Conditional Decorator order and composition', function () {
     expect(result.value).to.exist;
     expect(result.done).to.be.false;
     // Test negative case (wrong action type)
-    generator = await mock.a.call(
-      mock,
-      new Entity().removeProperty({ name: 'HP' }) as AddPropertyAction
-    );
+    generator = await mock.a.call(mock, new Entity().removeProperty({ name: 'HP' }) as AddPropertyAction);
     result = await generator.next();
     expect(result.value).to.not.exist;
     expect(result.done).to.be.true;
@@ -72,23 +69,23 @@ describe('Multiple Conditional Generators, including with bound context', functi
     actionOfWrongType.permitted = true;
     actionOfWrongType.applied = true;
     expect(
-      (await (await mock.test.call(mock, actionOfWrongType as unknown as AddPropertyAction)).next())
-        .value
+      (await (await mock.test.call(mock, actionOfWrongType as unknown as AddPropertyAction)).next()).value
     ).to.not.exist;
 
     // Right action type, wrong fields
-    const action = entity.addProperty({ name: 'HP', current: 0 });
-    action.applied = true;
-    action.permitted = false;
-    expect((await mock.test.call(mock, action).next()).value).to.not.exist;
-    action.applied = false;
-    action.permitted = true;
-    expect((await mock.test.call(mock, action).next()).value).to.not.exist;
+    const wrongFieldsAction = entity.addProperty({ name: 'HP', current: 0 });
+    wrongFieldsAction.applied = true;
+    wrongFieldsAction.permitted = false;
+    expect((await mock.test.call(mock, wrongFieldsAction).next()).value).to.not.exist;
+    wrongFieldsAction.applied = false;
+    wrongFieldsAction.permitted = true;
+    expect((await mock.test.call(mock, wrongFieldsAction).next()).value).to.not.exist;
 
     // All correct conditions
-    action.applied = true;
-    action.permitted = true;
-    action.target = entity;
-    expect((await mock.test.call(mock, action).next()).value).to.exist;
+    const correctAction = entity.addProperty({ name: 'HP', current: 0 });
+    correctAction.applied = true;
+    correctAction.permitted = true;
+    correctAction.target = entity;
+    expect((await mock.test.call(mock, correctAction).next()).value).to.exist;
   });
 });

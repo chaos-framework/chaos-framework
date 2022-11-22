@@ -7,4 +7,5 @@ export * from './Decorators/Component/Permitted.js';
 export * from './Decorators/Component/TargetsMe.js';
 export * from './Decorators/Component/TargetsMyTeam.js';
 export * from './Decorators/Component/TargetsMyPlayers.js';
+export * from './Decorators/Component/TargetsMyParent.js';
 export * from './Decorators/Component/WhilePublished.js';

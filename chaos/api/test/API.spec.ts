@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { ArrayChunk, ByteLayer, Chaos, Entity, Player, Team, World } from '@chaos-framework/core';
+import { Chaos, Entity, Player, Team, World } from '@chaos-framework/core';
 
 import { QueryAPI } from '../src/internal.js';
 
