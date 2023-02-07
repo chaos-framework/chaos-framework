@@ -6,5 +6,6 @@ export enum MessageType {
   WHISPER = 'WHISPER',
   CAST = 'CAST',
   ACTION = 'ACTION',
-  ACTION_LIST = 'ACTION_LIST'
+  ACTION_LIST = 'ACTION_LIST',
+  RESET = 'RESET'
 }

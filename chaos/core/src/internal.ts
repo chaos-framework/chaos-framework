@@ -43,6 +43,7 @@ export * from './Events/Actions/PropertyThresholdAction.js';
 export * from './Events/Enums.js';
 // GAME AND WORLD
 export * from './Game/Processor.js';
+export * from './Game/Timeline.js';
 export * as Chaos from './Game/Chaos.js';
 export * from './Game/Game.js';
 export * from './Game/Team.js';

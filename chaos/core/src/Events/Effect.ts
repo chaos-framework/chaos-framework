@@ -7,6 +7,14 @@ export type EffectRunner<T extends Effect = Effect, R = any, N = any> = {
   run(): EffectGenerator<T, R, N>;
 };
 
+export function isEffectRunner(o: any): o is EffectRunner {
+  return o.any !== undefined;
+}
+
+export function isEffectGenerator(o: any): o is EffectGenerator {
+  return o.next !== undefined;
+}
+
 export type ActionHandler<T extends Action = Action> = (action: T, ...params: any[]) => EffectGenerator;
 
 export type Immediate = readonly ['IMMEDIATE', EffectRunner];

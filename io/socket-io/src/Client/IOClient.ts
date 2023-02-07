@@ -31,7 +31,7 @@ export abstract class IOClient implements Client {
       try {
         console.log(JSON.stringify(json));
         const action = ActionDeserializer.deserializeAction(json);
-        processRunner(action, false);
+        Chaos.timeline.add(action);
       } catch (err) {
         console.error('Got a bad action payload from the server that could not be deserialized.');
         console.error((err as Error).message);

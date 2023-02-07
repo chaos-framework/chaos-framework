@@ -15,7 +15,8 @@ import {
   ExecutionHook,
   ActionHook,
   Vector,
-  EffectGenerator
+  EffectGenerator,
+  Timeline
 } from '../internal.js';
 
 export let id: string = 'Unnamed Game'; // Name of loaded game
@@ -40,6 +41,8 @@ export const playersWithoutTeams = new Map<string, Player>();
 
 export let actionHooks = new Array<ActionHook>();
 export let executionHooks = new Array<ExecutionHook>();
+
+export const timeline = new Timeline();
 
 export let currentTurn: Entity | Player | Team | undefined = undefined;
 export function setCurrentTurn(to: Entity | Player | Team | undefined) {
@@ -80,7 +83,6 @@ export const reference: ComponentContainer = {
 
 export function reset() {
   entities.clear();
-  components.clear();
   components.unpublish();
   components.clear();
   players.clear();
