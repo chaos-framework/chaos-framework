@@ -35,7 +35,7 @@ export abstract class IOClient implements Client {
       } catch (err) {
         console.error('Got a bad action payload from the server that could not be deserialized.');
         console.error((err as Error).message);
-        this.disconnect();
+        //this.disconnect();
       }
     });
   }

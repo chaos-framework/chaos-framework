@@ -225,4 +225,7 @@ function sendData() {
   for (const [, player] of Chaos.players) {
     player.broadcast();
   }
+  for (const [, admin] of Chaos.adminClients) {
+    admin.broadcastEnqueued();
+  }
 }

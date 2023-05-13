@@ -19,9 +19,16 @@ export class IOServerClient implements Client {
   }
 
   broadcastEnqueued(): boolean {
-    for (const serializedAction of this.broadcastQueue) {
-      return this.socket.emit(MessageType.ACTION, serializedAction);
+    for (const action of this.broadcastQueue) {
+      if (this.isAdmin) {
+        // Actions are not pre-serialized for admins
+        const serialized = action.serialize();
+        this.socket.emit(MessageType.ACTION, serialized);
+      } else {
+        this.socket.emit(MessageType.ACTION, action);
+      }
     }
+    this.broadcastQueue = new Queue<any>();
     return true;
   }
 

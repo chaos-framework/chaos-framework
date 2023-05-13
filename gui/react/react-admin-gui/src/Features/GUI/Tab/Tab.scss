@@ -1,5 +1,7 @@
 .Tab {
-  padding: 6px; // TODO should have this all percentage based, etc
   width: 100%;
   height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }

@@ -38,6 +38,7 @@ export class IOServer implements Server {
       const query = socket.handshake.query as unknown as CONNECTION;
       if (query.isAdmin) {
         const adminClient = new IOServerClient(socket);
+        adminClient.isAdmin = true;
         Chaos.adminClients.set(adminClient.id, adminClient);
         const gameState = Chaos.serializeForAdmin();
         console.log(

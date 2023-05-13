@@ -5,6 +5,7 @@ export { EntityQuery } from './Queries/EntityQuery.js';
 export { PlayerQuery } from './Queries/PlayerQuery.js';
 export { TeamQuery } from './Queries/TeamQuery.js';
 export { ComponentQuery } from './Queries/ComponentQuery.js';
+export { PropertyQuery } from './Queries/PropertyQuery.js';
 export { WorldQuery } from './Queries/WorldQuery.js';
 export { ChunkQuery } from './Queries/ChunkQuery.js';
 export { LayerQuery } from './Queries/LayerQuery.js';

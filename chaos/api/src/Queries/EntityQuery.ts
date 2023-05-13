@@ -1,4 +1,4 @@
-import { Component, Entity, Player, Team, World } from '@chaos-framework/core';
+import { Component, Entity, Player, Property } from '@chaos-framework/core';
 
 import {
   IndividualQuery,
@@ -6,7 +6,8 @@ import {
   PlayerQuery,
   ComponentQuery,
   WorldQuery,
-  TeamQuery
+  TeamQuery,
+  PropertyQuery
 } from '../internal.js';
 import { RelativeCollectionQuery } from './Query.js';
 
@@ -34,6 +35,14 @@ export class EntityQuery extends IndividualQuery<Entity> {
       this.append('components'),
       this.value.components.all,
       ComponentQuery
+    );
+  }
+
+  properties() {
+    return new CollectionQuery<Property, PropertyQuery>(
+      this.append('properties'),
+      this.value.properties.all,
+      PropertyQuery
     );
   }
 

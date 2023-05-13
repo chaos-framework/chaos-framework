@@ -1,9 +1,11 @@
-import { Entity, Value, PropertyThresholdAction } from '../../internal.js';
+import { Entity, Value, PropertyThresholdAction, chaosUniqueId } from '../../internal.js';
 
 export type ValueType = 'current' | 'min' | 'max';
 export type ThresholdState = 'out' | 'in' | 'equals';
 
 export class Property implements Property {
+  readonly id: string;
+
   entity: Entity;
   name: string;
   current: Value;
@@ -15,12 +17,14 @@ export class Property implements Property {
   maxState: 'out' | 'in' | 'equals';
 
   constructor(
+    id = chaosUniqueId(),
     entity: Entity,
     name: string,
     current: number = 0,
     min: number = -Infinity,
     max: number = Infinity
   ) {
+    this.id = id;
     this.entity = entity;
     this.name = name;
     this.current = new Value(this, 'current', current);
@@ -115,5 +119,59 @@ export class Property implements Property {
       thresholdValue: this.max.calculated,
       newState: this.maxState
     });
+  }
+}
+
+// tslint:disable-next-line: no-namespace
+export namespace Property {
+  export interface Serialized {}
+
+  export interface SerializedForClient {
+    id: string;
+    name: string;
+    current: Value;
+    min: Value;
+    max: Value;
+  }
+
+  export function Deserialize(json: Entity.Serialized): Entity {
+    throw new Error('Not yet implemented.');
+  }
+
+  export function DeserializeAsClient(json: Entity.SerializedForClient): Entity {
+    try {
+      const { id, name, metadata, team, active, omnipotent, components, world: worldId, glyph } = json;
+      const deserialized = new Entity({
+        id,
+        name,
+        metadata,
+        active,
+        omnipotent,
+        glyph,
+        permanentComponents: [] as Component[]
+      });
+      deserialized.position = Vector.deserialize(json.position);
+      if (worldId !== undefined) {
+        const world = Chaos.getWorld(worldId);
+        if (world !== undefined) {
+          deserialized.world = world;
+        }
+      }
+      if (team !== undefined) {
+        const t = Chaos.teams.get(team);
+        if (t === undefined) {
+          throw new Error(`Team for Entity ${id} is not defined locally.`);
+        }
+        deserialized.team = t;
+      }
+      if (components !== undefined) {
+        for (let c of components) {
+          deserialized._attach(Component.DeserializeAsClient(c));
+        }
+      }
+      return deserialized;
+    } catch (error) {
+      throw error;
+    }
   }
 }

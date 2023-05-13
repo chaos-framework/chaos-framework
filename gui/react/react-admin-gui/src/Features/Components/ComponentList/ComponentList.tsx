@@ -3,7 +3,7 @@ import { useChaos, useChaosAPI } from '@chaos-framework/react-lib';
 import { CollectionQuery, ComponentQuery } from '@chaos-framework/api';
 import { Component } from '@chaos-framework/core';
 import { DockContextType } from 'rc-dock';
-import { entityInspectorTabFactory } from '../../GUI/Tab/tabFactory.js';
+import { componentInspectorTabFactory } from '../../GUI/Tab/tabFactory.js';
 import Table, { BaseTableProps, ColumnDefinition } from '../../../Components/Table/Table.js';
 
 interface ComponentListProps extends BaseTableProps {
@@ -16,12 +16,12 @@ const ComponentList: FC<ComponentListProps> = (props: ComponentListProps) => {
   const context = useContext(DockContextType);
   const [, query] = useChaos(props.data);
   const columnDefinition: ColumnDefinition[] = [
-    {
-      key: 'link',
-      name: '',
-      link: true,
-      width: 80
-    },
+    // {
+    //   key: 'link',
+    //   name: '',
+    //   link: true,
+    //   width: 80
+    // },
     {
       key: 'id',
       name: 'id',
@@ -39,7 +39,7 @@ const ComponentList: FC<ComponentListProps> = (props: ComponentListProps) => {
       tabId={props.tabId}
       columns={columnDefinition}
       collectionQuery={query}
-      tabFactory={entityInspectorTabFactory}
+      tabFactory={componentInspectorTabFactory}
     />
   );
 };

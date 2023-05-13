@@ -1,4 +1,4 @@
-import { CONNECTION_RESPONSE, MessageType, Chaos } from '@chaos-framework/core';
+import { CONNECTION_RESPONSE, MessageType, Chaos, ActionDeserializer } from '@chaos-framework/core';
 
 import { IOClient } from './IOClient.js';
 
