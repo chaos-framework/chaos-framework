@@ -4,47 +4,43 @@ export type ValueType = 'current' | 'min' | 'max';
 export type ThresholdState = 'out' | 'in' | 'equals';
 
 export class Property implements Property {
-  readonly id: string;
-
   entity: Entity;
   name: string;
   current: Value;
-  min: Value;
-  max: Value;
+  min?: Value;
+  max?: Value;
 
   // Relationships of current base value to minimum and maximum thresholds
   minState: 'out' | 'in' | 'equals';
   maxState: 'out' | 'in' | 'equals';
 
   constructor(
-    id = chaosUniqueId(),
     entity: Entity,
     name: string,
     current: number = 0,
     min: number = -Infinity,
     max: number = Infinity
   ) {
-    this.id = id;
     this.entity = entity;
     this.name = name;
     this.current = new Value(this, 'current', current);
-    this.min = new Value(this, 'min', min);
-    this.max = new Value(this, 'max', max);
+    this.min = min ? new Value(this, 'min', min) : undefined;
+    this.max = max ? new Value(this, 'max', max) : undefined;
 
     this.minState = this.getMinState();
     this.maxState = this.getMaxState();
   }
 
-  getValue(type: ValueType) {
-    return this[type].calculated;
-  }
-
   getMinState(): ThresholdState {
-    return this.current.calculated < this.min.calculated
+    if (this.min !== undefined) {
+      return this.current.calculated < this.min.calculated
       ? 'out'
       : this.current.calculated > this.min.calculated
       ? 'in'
       : 'equals';
+    } else {
+      return 'in';
+    }
   }
 
   updateMinState(): ThresholdState | undefined {
@@ -56,11 +52,15 @@ export class Property implements Property {
   }
 
   getMaxState(): ThresholdState {
-    return this.current.calculated > this.max.calculated
-      ? 'out'
-      : this.current.calculated < this.max.calculated
-      ? 'in'
-      : 'equals';
+    if (this.max !== undefined) {
+      return this.current.calculated > this.max.calculated
+        ? 'out'
+        : this.current.calculated < this.max.calculated
+        ? 'in'
+        : 'equals';
+    } else {
+      return 'in';
+    }
   }
 
   updateMaxState(): ThresholdState | undefined {
@@ -91,7 +91,7 @@ export class Property implements Property {
       using,
       metadata,
       threshold: 'min',
-      thresholdValue: this.min.calculated,
+      thresholdValue: this.min?.calculated || 0,
       newState: this.minState
     });
   }
@@ -116,7 +116,7 @@ export class Property implements Property {
       using,
       metadata,
       threshold: 'max',
-      thresholdValue: this.max.calculated,
+      thresholdValue: this.max?.calculated || 0,
       newState: this.maxState
     });
   }
@@ -127,48 +127,26 @@ export namespace Property {
   export interface Serialized {}
 
   export interface SerializedForClient {
-    id: string;
     name: string;
-    current: Value;
-    min: Value;
-    max: Value;
+    current: number;
+    min?: number;
+    max?: number;
   }
 
-  export function Deserialize(json: Entity.Serialized): Entity {
+  export function Deserialize(json: Entity.Serialized): Property {
     throw new Error('Not yet implemented.');
   }
 
-  export function DeserializeAsClient(json: Entity.SerializedForClient): Entity {
+  export function DeserializeAsEntity(entity: Entity, json: Property.SerializedForClient): Property {
     try {
-      const { id, name, metadata, team, active, omnipotent, components, world: worldId, glyph } = json;
-      const deserialized = new Entity({
-        id,
+      const { name, current, min, max } = json;
+      const deserialized = new Property(
+        entity,
         name,
-        metadata,
-        active,
-        omnipotent,
-        glyph,
-        permanentComponents: [] as Component[]
-      });
-      deserialized.position = Vector.deserialize(json.position);
-      if (worldId !== undefined) {
-        const world = Chaos.getWorld(worldId);
-        if (world !== undefined) {
-          deserialized.world = world;
-        }
-      }
-      if (team !== undefined) {
-        const t = Chaos.teams.get(team);
-        if (t === undefined) {
-          throw new Error(`Team for Entity ${id} is not defined locally.`);
-        }
-        deserialized.team = t;
-      }
-      if (components !== undefined) {
-        for (let c of components) {
-          deserialized._attach(Component.DeserializeAsClient(c));
-        }
-      }
+        current,
+        min,
+        max
+      );
       return deserialized;
     } catch (error) {
       throw error;
