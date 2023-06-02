@@ -4,6 +4,7 @@ import { useChaos } from '@chaos-framework/react-lib';
 import { EntityQuery } from '@chaos-framework/api';
 import TeamSelect from '../../Teams/TeamSelect.js';
 import ComponentList from '../../Components/ComponentList/ComponentList.js';
+import PropertyList from '../../Properties/PropertyList/PropertyList.js';
 
 import './EntityInspector.scss';
 
@@ -23,9 +24,12 @@ const EntityInspector: FC<EntityInspectorProps> = (props: EntityInspectorProps) 
       <FormGroup label="Team">
         <TeamSelect initial={query.team()!} />
       </FormGroup>
-      <FormGroup label="Attributes" labelFor="text-input"></FormGroup>
-      <FormGroup label="Components" labelFor="text-input"></FormGroup>
-      <ComponentList data={query.components()} />
+      <FormGroup label="Attributes" labelFor="text-input">
+        <PropertyList data={query.properties()} />
+      </FormGroup>
+      <FormGroup label="Components" labelFor="text-input">
+        <ComponentList data={query.components()} />
+      </FormGroup>
     </div>
   );
 };

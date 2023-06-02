@@ -29,6 +29,8 @@ import {
   ProcessEffectGenerator
 } from '../internal.js';
 
+export type Update = { path: string; value: any; predicate?: any };
+
 export abstract class Action<
   TargetType extends ComponentContainer = ComponentContainer,
   CasterType extends ComponentContainer = ComponentContainer
@@ -460,6 +462,8 @@ export abstract class Action<
 
   initialize(): void {}
   teardown(): void {}
+
+  getSubscriptionAddressesAndValues(): Update[] { return []; }
 }
 
 // tslint:disable-next-line: no-namespace

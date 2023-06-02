@@ -9,7 +9,9 @@ import {
   TerminalMessage,
   Property,
   ValueType,
-  ProcessEffectGenerator
+  ProcessEffectGenerator,
+  Update,
+  Chaos
 } from '../../internal.js';
 
 export class PropertyChangeAction extends Action<Entity> {
@@ -172,6 +174,52 @@ export class PropertyChangeAction extends Action<Entity> {
       );
     }
   }
+
+  addSubscriptionAddressesAndValues(): Update[] {
+    return [{
+      path: `${this.target.id}_${this.property.name}_${this.value}`,
+      value: this.property[this.value].calculated,
+      predicate: this.target
+    }];
+  }
+
+  serialize(): PropertyChangeAction.SerializedForClient {
+    return {
+      ...super.serialize(),
+      target: this.target.id,
+      property: this.property.name,
+      value: this.value,
+      type: this.type,
+      amount: this.amount,
+      finalAmount: this.finalAmount
+    }
+  }
+
+  static deserialize(json: PropertyChangeAction.SerializedForClient): PropertyChangeAction {
+    try {
+      // Deserialize common fields
+      const common = Action.deserializeCommonFields(json);
+      // Deserialize unique fields
+      const target: Entity | undefined = Chaos.getEntity(json.target);
+      const property = target?.getProperty(json.property)!;
+      // Build the action if fields are proper, otherwise throw an error
+      if (target && property) {
+        const a = new PropertyChangeAction({
+          ...common,
+          target,
+          amount: json.amount,
+          type: json.type,
+          property
+        });
+        a.finalAmount ??= json.finalAmount;
+        return a;
+      } else {
+        throw new Error('PropertyChangeAction fields not correct.');
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 // tslint:disable-next-line: no-namespace
@@ -185,5 +233,14 @@ export namespace PropertyChangeAction {
     property: Property;
     value?: 'current' | 'min' | 'max';
     type?: 'adjust' | 'set';
+  }
+
+  export interface SerializedForClient extends Action.Serialized {
+    target: string;
+    property: string;
+    value: 'current' | 'min' | 'max';
+    type: 'adjust' | 'set';
+    amount: number;
+    finalAmount: number;
   }
 }

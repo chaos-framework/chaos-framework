@@ -1,6 +1,7 @@
 import {
   Action,
   Chaos,
+  PropertyChangeAction,
   PublishEntityAction,
   PublishPlayerAction,
   UnpublishEntityAction
@@ -58,6 +59,13 @@ export class ActionMapper {
       if (teamId !== undefined) {
         add(`${teamId}.entities`, action.target.team!.entities);
       }
+      return arr;
+    }
+    // PROPERTY ADJUSTMENT
+    else if (action instanceof PropertyChangeAction) {
+      predicate = action.target;
+      // Just the property
+      add(`${action.target.id}_${action.property.name}_${action.value}`, action.property[action.value].calculated);
       return arr;
     }
     return arr;

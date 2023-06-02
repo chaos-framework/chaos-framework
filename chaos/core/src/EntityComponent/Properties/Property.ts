@@ -7,8 +7,8 @@ export class Property implements Property {
   entity: Entity;
   name: string;
   current: Value;
-  min?: Value;
-  max?: Value;
+  min: Value;
+  max: Value;
 
   // Relationships of current base value to minimum and maximum thresholds
   minState: 'out' | 'in' | 'equals';
@@ -24,8 +24,8 @@ export class Property implements Property {
     this.entity = entity;
     this.name = name;
     this.current = new Value(this, 'current', current);
-    this.min = min ? new Value(this, 'min', min) : undefined;
-    this.max = max ? new Value(this, 'max', max) : undefined;
+    this.min = new Value(this, 'min', min);
+    this.max = new Value(this, 'max', max);
 
     this.minState = this.getMinState();
     this.maxState = this.getMaxState();
@@ -119,6 +119,15 @@ export class Property implements Property {
       thresholdValue: this.max?.calculated || 0,
       newState: this.maxState
     });
+  }
+
+  serializeForClient(): Property.SerializedForClient {
+    return {
+      name: this.name,
+      current: this.current.calculated,
+      min: this.min.calculated,
+      max: this.max.calculated,
+    }
   }
 }
 

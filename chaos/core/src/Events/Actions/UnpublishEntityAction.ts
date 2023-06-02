@@ -6,7 +6,8 @@ import {
   ActionType,
   BroadcastType,
   NestedSetChanges,
-  ProcessEffectGenerator
+  ProcessEffectGenerator,
+  Update
 } from '../../internal.js';
 
 export class UnpublishEntityAction extends Action<Entity> {
@@ -42,6 +43,31 @@ export class UnpublishEntityAction extends Action<Entity> {
       ...super.serialize(),
       target: this.target.id
     };
+  }
+
+  addSubscriptionAddressesAndValues(): Update[] {
+    const updates: Update[] = [
+      {
+        path: `entities`,
+        value: Chaos.entities,
+        predicate: this.target
+      }
+    ];
+    for (const player of this.target.players.values()) {
+      updates.push({
+        path: `${player.id}.entities`,
+        value: player.entities,
+        predicate: this.target
+      });
+    }
+    if (this.target.team !== undefined) {
+      updates.push({
+        path: `${this.target.team.id}.entities`,
+        value: this.target.team.entities,
+        predicate: this.target
+      });
+    }
+    return updates;
   }
 
   static deserialize(json: UnpublishEntityAction.Serialized): UnpublishEntityAction {

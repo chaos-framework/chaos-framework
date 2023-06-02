@@ -7,15 +7,24 @@ export class PropertyQuery extends IndividualQuery<Property> {
     super(property.name, property);
   }
 
-  id() {
-    return new IndividualQuery<string>(this.append('id'), this.value.id);
-  }
+  // id() {
+  //   return new IndividualQuery<string>(this.append('id'), this.value.entity.id );
+  // }
 
   name() {
     return new IndividualQuery<string>(this.append('name'), this.value.name);
   }
 
-  description() {
-    return new IndividualQuery<string | undefined>(this.append('description'), this.value.description);
+  current() {
+    return new IndividualQuery<number>(this.append('name'), this.value.current.calculated);
   }
+
+  min() {
+    return new IndividualQuery<number>(this.append('name'), this.value.min.calculated);
+  }
+
+  max() {
+    return new IndividualQuery<number>(this.append('name'), this.value.max.calculated);
+  }
+
 }

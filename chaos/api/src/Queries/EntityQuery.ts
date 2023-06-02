@@ -41,7 +41,7 @@ export class EntityQuery extends IndividualQuery<Entity> {
   properties() {
     return new CollectionQuery<Property, PropertyQuery>(
       this.append('properties'),
-      this.value.properties.all,
+      this.value.properties,
       PropertyQuery
     );
   }

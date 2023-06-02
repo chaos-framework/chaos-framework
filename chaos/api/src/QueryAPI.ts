@@ -25,7 +25,7 @@ export class QueryAPI {
 
   hook(actions: Action[]): void {
     for (const action of actions) {
-      const updates = ActionMapper.mapActionToPotentialSubscriptions(action);
+      const updates = action.getSubscriptionAddressesAndValues();
       for (const update of updates) {
         const { path, value, predicate } = update;
         const subscribers = _.get(this.subscriptions, path);

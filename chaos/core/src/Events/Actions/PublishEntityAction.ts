@@ -9,7 +9,8 @@ import {
   BroadcastType,
   NestedSet,
   NestedSetChanges,
-  ProcessEffectGenerator
+  ProcessEffectGenerator,
+  Update
 } from '../../internal.js';
 
 export class PublishEntityAction extends Action<Entity> {
@@ -62,6 +63,31 @@ export class PublishEntityAction extends Action<Entity> {
 
   getEntity(): Entity {
     return this.target;
+  }
+
+  addSubscriptionAddressesAndValues(): Update[] {
+    const updates: Update[] = [
+      {
+        path: `entities`,
+        value: Chaos.entities,
+        predicate: this.target
+      }
+    ];
+    for (const player of this.target.players.values()) {
+      updates.push({
+        path: `${player.id}.entities`,
+        value: player.entities,
+        predicate: this.target
+      });
+    }
+    if (this.target.team !== undefined) {
+      updates.push({
+        path: `${this.target.team.id}.entities`,
+        value: this.target.team.entities,
+        predicate: this.target
+      });
+    }
+    return updates;
   }
 
   static deserialize(json: PublishEntityAction.Serialized): PublishEntityAction {

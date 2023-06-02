@@ -657,6 +657,10 @@ export class Entity<A extends readonly string[] = readonly string[], C extends C
         components.push(c.serializeForClient());
       }
     });
+    const properties: Property.SerializedForClient[] = [];
+    for (const [name, property] of this.properties) {
+      properties.push(property.serializeForClient());
+    }
     return {
       id: this.id,
       position: this.position.serialize(),
@@ -666,7 +670,8 @@ export class Entity<A extends readonly string[] = readonly string[], C extends C
       world: this.world?.id,
       components,
       glyph: this.glyph,
-      team: this.team?.id
+      team: this.team?.id,
+      properties
     };
   }
 }
@@ -696,6 +701,7 @@ export namespace Entity {
     omnipotent?: boolean;
     team?: string;
     components?: Component.SerializedForClient[];
+    properties?: Property.SerializedForClient[];
     glyph?: GlyphCode347;
   }
 
@@ -705,7 +711,7 @@ export namespace Entity {
 
   export function DeserializeAsClient(json: Entity.SerializedForClient): Entity {
     try {
-      const { id, name, metadata, team, active, omnipotent, components, world: worldId, glyph } = json;
+      const { id, name, metadata, team, active, omnipotent, components, world: worldId, glyph, properties } = json;
       const deserialized = new Entity({
         id,
         name,
@@ -716,22 +722,28 @@ export namespace Entity {
         permanentComponents: [] as Component[]
       });
       deserialized.position = Vector.deserialize(json.position);
-      if (worldId !== undefined) {
+      if (worldId) {
         const world = Chaos.getWorld(worldId);
-        if (world !== undefined) {
+        if (world) {
           deserialized.world = world;
         }
       }
-      if (team !== undefined) {
+      if (team) {
         const t = Chaos.teams.get(team);
         if (t === undefined) {
           throw new Error(`Team for Entity ${id} is not defined locally.`);
         }
         deserialized.team = t;
       }
-      if (components !== undefined) {
+      if (components) {
         for (let c of components) {
           deserialized._attach(Component.DeserializeAsClient(c));
+        }
+      }
+      if (properties) {
+        for (const p of properties) {
+          // TODO deserialize modifiers as well (maybe they need a refactor, first)
+          deserialized._addProperty(p.name, p.current, p.min, p.max);
         }
       }
       return deserialized;

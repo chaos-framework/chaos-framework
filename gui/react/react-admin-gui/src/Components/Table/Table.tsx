@@ -43,11 +43,10 @@ const Table = (props: TableProps) => {
   const context = useContext(DockContextType);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageLength, setPageLength] = useState(props.pageLength || 20);
-  const [totalPages, setTotalPages] = useState(Math.ceil(collectionQuery.value.size / pageLength));
+  const [totalPages, setTotalPages] = useState(Math.ceil(collectionQuery.value.size / pageLength) || 1);
 
   const paginatedEntries = getQueriesPaginated(collectionQuery, currentPage, pageLength);
 
-  console.log('got rerenderedererered!!!');
   const actualPageLength = paginatedEntries.length;
 
   // const updateWithNewPage = (pageNumber: number) => {
