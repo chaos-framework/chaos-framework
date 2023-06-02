@@ -1,5 +1,5 @@
 import { List } from 'simple-double-linked-list';
-import { Action } from '../internal.js';
+import { Action, Chaos } from '../internal.js';
 
 export class Timeline {
   // Double linked list of all actions
@@ -38,9 +38,15 @@ export class Timeline {
       while (!this.iterator.IsAtEnd() && !this.paused) {
         const action = this.iterator.GetCurrentNode().value;
         const generator = action.apply();
+        for (const hook of Chaos.actionHooks) {
+          hook(action);
+        }
+        for (const hook of Chaos.executionHooks) {
+          hook([action]);
+        }
         let result = await generator.next();
         while (!result.done) {
-          await generator.next();
+          result = await generator.next();
         }
         this.iterator.Next();
       }

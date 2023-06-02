@@ -9,7 +9,7 @@ export class IndividualQuery<T> implements Query {
   constructor(public path: string, public value: T, public stringReference?: string) {}
 
   append(path: string): string {
-    return `${this.path}.${path}`;
+    return `${this.path}_${path}`;
   }
 }
 

@@ -45,7 +45,7 @@ export class UnpublishEntityAction extends Action<Entity> {
     };
   }
 
-  addSubscriptionAddressesAndValues(): Update[] {
+  getSubscriptionAddressesAndValues(): Update[] {
     const updates: Update[] = [
       {
         path: `entities`,
@@ -55,14 +55,14 @@ export class UnpublishEntityAction extends Action<Entity> {
     ];
     for (const player of this.target.players.values()) {
       updates.push({
-        path: `${player.id}.entities`,
+        path: `${player.id}_entities`,
         value: player.entities,
         predicate: this.target
       });
     }
     if (this.target.team !== undefined) {
       updates.push({
-        path: `${this.target.team.id}.entities`,
+        path: `${this.target.team.id}_entities`,
         value: this.target.team.entities,
         predicate: this.target
       });

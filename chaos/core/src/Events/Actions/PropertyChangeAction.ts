@@ -175,7 +175,7 @@ export class PropertyChangeAction extends Action<Entity> {
     }
   }
 
-  addSubscriptionAddressesAndValues(): Update[] {
+  getSubscriptionAddressesAndValues(): Update[] {
     return [{
       path: `${this.target.id}_${this.property.name}_${this.value}`,
       value: this.property[this.value].calculated,
