@@ -1,5 +1,6 @@
 import { List } from 'simple-double-linked-list';
 import { Action, Chaos } from '../internal.js';
+import { ListNode } from 'simple-double-linked-list/dist/src/listNode.js';
 
 export class Timeline {
   // Double linked list of all actions
@@ -10,6 +11,9 @@ export class Timeline {
   paused: boolean = false;
   // Whether or not the timeline is actively playing (looping through iterator) right now
   processing: boolean = false;
+
+  // Map to each action's list node
+  nodeByActionId = new Map<String, ListNode<Action>>();
 
   constructor() {
     this.actions = new List<Action>();
@@ -37,6 +41,9 @@ export class Timeline {
     try {
       while (!this.iterator.IsAtEnd() && !this.paused) {
         const action = this.iterator.GetCurrentNode().value;
+        if (!this.nodeByActionId.has(action.id)) {
+          this.nodeByActionId.set(action.id, this.iterator.GetCurrentNode());
+        }
         const generator = action.apply();
         for (const hook of Chaos.actionHooks) {
           hook(action);
@@ -98,4 +105,5 @@ export class Timeline {
 
     this.play();
   }
+
 }

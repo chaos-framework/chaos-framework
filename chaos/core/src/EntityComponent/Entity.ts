@@ -115,7 +115,7 @@ export class Entity<A extends readonly string[] = readonly string[], C extends C
   }
 
   print(): string {
-    return this.name !== '' ? this.name : '???';
+    return this.name == '' ? '???': this.name;
   }
 
   activate() {

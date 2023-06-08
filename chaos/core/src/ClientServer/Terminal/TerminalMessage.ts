@@ -23,4 +23,19 @@ export class TerminalMessage {
     }
     return strings.join(' ');
   }
+
+  serialize(): TerminalMessage.Serialized {
+    return {
+      channel: this.channel,
+      fragments: this.fragments.map(fragment => typeof fragment === 'string' ? fragment : fragment.serialize())
+    };
+  }
+}
+
+// tslint:disable-next-line: no-namespace
+export namespace TerminalMessage {
+  export interface Serialized {
+    channel?: string,
+    fragments: (string | TerminalMessageFragment.Serialized)[]
+  }
 }

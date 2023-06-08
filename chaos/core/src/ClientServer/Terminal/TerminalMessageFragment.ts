@@ -1,4 +1,5 @@
-import { Component, Entity, Printable } from '../../internal.js';
+import { Chaos, Component, Entity, Printable } from '../../internal.js';
+import Terminal from '../Terminal.js';
 
 // tslint:disable-next-line: max-classes-per-file
 
@@ -19,10 +20,11 @@ export class TerminalMessageFragment {
     return this.replacement ?? this.item.print();
   }
 
-  serialize(): any {
+  serialize(): TerminalMessageFragment.Serialized {
     return {
       type: this.type,
-      item: this.serializeItem()
+      item: this.serializeItem(),
+      replacement: this.replacement
     };
   }
 
@@ -34,9 +36,23 @@ export class TerminalMessageFragment {
         return (this.item as Component).id;
     }
   }
+
+  static deserialize(json: TerminalMessageFragment.Serialized): TerminalMessageFragment | string {
+    const predicate = json.type === 'entity' ? Chaos.getEntity(json.item) : Chaos.getComponent(json.item);
+    if (predicate === undefined) {
+      return '???';
+    }
+    return new TerminalMessageFragment(predicate, json.replacement);
+  }
+
 }
 
 // tslint:disable-next-line: no-namespace
 export namespace TerminalMessageFragment {
-  export function deserialize(json: any) {}
+  export interface Serialized {
+    type: 'entity' | 'component',
+    item: string,
+    replacement?: string
+  }
+
 }

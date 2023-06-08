@@ -185,6 +185,10 @@ export function getEntity(id: string): Entity | undefined {
   return entities.get(id);
 }
 
+export function getComponent(id: string): Component | undefined {
+  return allComponents.get(id);
+}
+
 export function addEntity(e: Entity): boolean {
   entities.set(e.id, e);
   if (e.world && worlds.has(e.world.id)) {

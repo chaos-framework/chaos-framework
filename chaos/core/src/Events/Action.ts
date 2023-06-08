@@ -26,7 +26,8 @@ import {
   Permit,
   Deny,
   Delay,
-  ProcessEffectGenerator
+  ProcessEffectGenerator,
+  chaosUniqueId
 } from '../internal.js';
 
 export type Update = { path: string; value: any; predicate?: any };
@@ -36,6 +37,8 @@ export abstract class Action<
   CasterType extends ComponentContainer = ComponentContainer
 > implements EffectRunner
 {
+  id!: string;
+
   actionType: ActionType = ActionType.INVALID;
   broadcastType: BroadcastType = BroadcastType.FULL;
 
@@ -101,7 +104,8 @@ export abstract class Action<
 
   static universallyRequiredFields: string[] = ['tags', 'breadcrumbs', 'permitted'];
 
-  constructor({ caster, target, using, metadata }: ActionParameters<TargetType, CasterType> = {}) {
+  constructor({ id, caster, target, using, metadata }: ActionParameters<TargetType, CasterType> = {}) {
+    this.id = id || chaosUniqueId();
     this.caster = caster;
     this.target = target;
     this.using = using;
@@ -423,7 +427,7 @@ export abstract class Action<
     const using: Entity | undefined = json.using ? Chaos.getEntity(json.using) : undefined;
     const metadata = json.metadata;
     const permitted = json.permitted;
-    return { caster, target, using, metadata, permitted };
+    return { id: json.id, caster, target, using, metadata, permitted };
   }
 
   abstract apply(): ProcessEffectGenerator;
@@ -441,12 +445,14 @@ export abstract class Action<
 
   serialize(): Action.Serialized {
     return {
+      id: this.id,
       caster: this.caster?.id,
       target: this.target?.id,
       using: this.using?.id,
       // tags: Array.from(this.tags),
       permitted: this.permitted,
-      actionType: this.actionType
+      actionType: this.actionType,
+      message: this.generatedMessage?.serialize()
     };
   }
 
@@ -469,20 +475,28 @@ export abstract class Action<
 // tslint:disable-next-line: no-namespace
 export namespace Action {
   export interface Serialized {
+    id: string;
     caster?: string;
     target?: any;
     using?: string;
     metadata?: { [key: string]: string | number | boolean | undefined };
     permitted: boolean;
     actionType: ActionType;
+    message?: TerminalMessage.Serialized;
+    originId?: string;
+    originType?: 'react' | 'followup';
   }
 
   export interface Deserialized {
+    id: string;
     caster?: Entity;
     target?: Entity;
     using?: Entity;
     metadata?: { [key: string]: string | number | boolean | undefined };
     permitted: boolean;
+    message?: TerminalMessage;
+    originId?: string;
+    originType?: 'react' | 'followup';
   }
 }
 
@@ -490,6 +504,7 @@ export interface ActionParameters<
   TargetType extends ComponentContainer = ComponentContainer,
   CasterType extends ComponentContainer = ComponentContainer
 > {
+  id?: string;
   caster?: CasterType;
   target?: TargetType;
   using?: Entity | Component;
