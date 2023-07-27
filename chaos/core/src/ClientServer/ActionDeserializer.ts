@@ -9,7 +9,9 @@ import {
   ChangeTurnAction,
   DetachComponentAction,
   AttachComponentAction,
-  PropertyChangeAction
+  PropertyChangeAction,
+  EventBegin,
+  EventEnd
 } from '../internal.js';
 
 export class ActionDeserializer {
@@ -43,6 +45,10 @@ export class ActionDeserializer {
             return UnpublishEntityAction.deserialize(json);
           case ActionType.PROPERTY_CHANGE_ACTION:
             return PropertyChangeAction.deserialize(json);
+          case ActionType.EVENT_BEGIN:
+            return EventBegin.deserialize(json);
+          case ActionType.EVENT_END:
+            return EventEnd.deserialize(json);
         }
       }
       throw new Error('Invalid action passed from server.');

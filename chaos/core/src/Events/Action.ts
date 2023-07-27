@@ -94,22 +94,20 @@ export abstract class Action<
 
   followups: (Action | Event)[] = [];
   reactions: (Action | Event)[] = [];
-  previous?: {
-    action: Action;
-    effectType: ProcessEffectKey;
-  };
+  parent?: Action | Event;
 
   // Function to run to check if the action is still feasible after any modifiers / counters etc
   feasabilityCallback?: (a?: Action) => boolean;
 
   static universallyRequiredFields: string[] = ['tags', 'breadcrumbs', 'permitted'];
 
-  constructor({ id, caster, target, using, metadata }: ActionParameters<TargetType, CasterType> = {}) {
+  constructor({ id, caster, target, using, metadata, message }: ActionParameters<TargetType, CasterType> = {}) {
     this.id = id || chaosUniqueId();
     this.caster = caster;
     this.target = target;
     this.using = using;
     this.permissions.set(0, new Permission(true));
+    this.terminalMessage = message;
     // tslint:disable-next-line: forin
     for (const key in metadata) {
       this.metadata.set(key, metadata[key]);
@@ -361,20 +359,18 @@ export abstract class Action<
     return ['IMMEDIATE', action];
   }
 
-  react(action: Action): Immediate {
-    action.previous = {
-      action: this,
-      effectType: 'IMMEDIATE'
-    };
-    return ['IMMEDIATE', action];
+  react(reaction: Action | Event): Immediate {
+    if (reaction instanceof Action) {
+      reaction.parent = this;
+    }
+    return ['IMMEDIATE', reaction];
   }
 
-  followup(item: Action | Event): Followup {
-    item.previous = {
-      action: this,
-      effectType: 'FOLLOWUP'
-    };
-    return ['FOLLOWUP', item];
+  followup(followup: Action | Event): Followup {
+    if (followup instanceof Action) {
+      followup.parent = this;
+    }
+    return ['FOLLOWUP', followup];
   }
 
   /**
@@ -427,6 +423,9 @@ export abstract class Action<
     const using: Entity | undefined = json.using ? Chaos.getEntity(json.using) : undefined;
     const metadata = json.metadata;
     const permitted = json.permitted;
+    if (json.message !== undefined) {
+      const message = TerminalMessage.deserialize(json.message);
+    }
     return { id: json.id, caster, target, using, metadata, permitted };
   }
 
@@ -509,4 +508,5 @@ export interface ActionParameters<
   target?: TargetType;
   using?: Entity | Component;
   metadata?: { [key: string]: string | number | boolean | undefined };
+  message?: TerminalMessage
 }

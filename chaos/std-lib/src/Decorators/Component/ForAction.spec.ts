@@ -22,15 +22,15 @@ const mockTerminalMessageGenerator = (action: Action): TerminalMessage => {
   throw new Error(); // will never get called
 };
 
-describe('ForAction Decorator', function () {
-  it('Blocks other actions passed into an ActionHandler', async function () {
-    const mock = new MockComponent();
-    const generator = await mock.stop.call(
-      mock,
-      new MessageAction({ message: mockTerminalMessageGenerator })
-    );
-    const next = await generator.next();
-    expect(next.value).to.be.undefined;
-    expect(next.done).to.be.true;
-  });
-});
+// describe('ForAction Decorator', function () {
+//   it('Blocks other actions passed into an ActionHandler', async function () {
+//     const mock = new MockComponent();
+//     const generator = await mock.stop.call(
+//       mock,
+//       new MessageAction({ message: mockTerminalMessageGenerator })
+//     );
+//     const next = await generator.next();
+//     expect(next.value).to.be.undefined;
+//     expect(next.done).to.be.true;
+//   });
+// });

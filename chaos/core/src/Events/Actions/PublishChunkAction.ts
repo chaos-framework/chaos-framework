@@ -31,6 +31,7 @@ export class PublishChunkAction extends Action<World> {
 
   serializeForClient(): PublishChunkAction.SerializedForClient {
     return {
+      ...super.serialize(),
       worldId: this.target.id,
       position: this.position.getIndexString(),
       layerData: this.target.serializeChunk(this.position),

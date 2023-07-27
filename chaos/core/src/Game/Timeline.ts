@@ -1,19 +1,36 @@
 import { List } from 'simple-double-linked-list';
-import { Action, Chaos } from '../internal.js';
+import { Action, Chaos, EventBegin, EventEnd } from '../internal.js';
 import { ListNode } from 'simple-double-linked-list/dist/src/listNode.js';
+import { Stack } from 'stack-typescript';
+
+export type TimelineActionHandle = {
+  id: string,
+  depth: number,
+  parentId?: string,
+  action?: Action, // action could be undefined for a few reasons
+  children?: TimelineActionHandle[]
+}
 
 export class Timeline {
-  // Double linked list of all actions
-  private actions: List<Action>;
-  // Permanent iterator representing "now"
-  private iterator!: ReturnType<List<Action>['Begin']>;
   // Whether or not the timeline is set to play automatically
   paused: boolean = false;
   // Whether or not the timeline is actively playing (looping through iterator) right now
   processing: boolean = false;
 
+  // Double linked list of all actions
+  private actions: List<Action>;
+  // Permanent iterator representing "now"
+  private iterator!: ReturnType<List<Action>['Begin']>;
+
+  // Stack of running EventBegins (undefined in case of events started before connection)
+  eventStack: Stack<EventBegin | undefined> = new Stack<EventBegin | undefined>();
   // Map to each action's list node
   nodeByActionId = new Map<String, ListNode<Action>>();
+
+  // Nested array of actions and events
+  nestedTimeline: TimelineActionHandle[] = []; 
+  // Map to each TimelineActionHandle by ID
+  actionsById: Map<string, TimelineActionHandle> = new Map<string, TimelineActionHandle>(); 
 
   constructor() {
     this.actions = new List<Action>();
@@ -41,6 +58,17 @@ export class Timeline {
     try {
       while (!this.iterator.IsAtEnd() && !this.paused) {
         const action = this.iterator.GetCurrentNode().value;
+
+        // See if this is the an EventBegin and add it to the stack, if so
+        if (action instanceof EventBegin) {
+          this.eventStack.push(action);
+        } else if (action instanceof EventEnd) {
+          // TODO handle EventEnd further up the stack, ie due to 
+          if (this.eventStack.tail?.id === action.beginningId) {
+            this.eventStack.pop();
+          }
+        }
+
         if (!this.nodeByActionId.has(action.id)) {
           this.nodeByActionId.set(action.id, this.iterator.GetCurrentNode());
         }
@@ -93,9 +121,11 @@ export class Timeline {
     if (Array.isArray(actions)) {
       for (const action of actions) {
         this.actions.AddFront(action);
+        this.addActionToMap(action);
       }
     } else {
       this.actions.AddFront(actions);
+      this.addActionToMap(actions);
     }
 
     // If the current iterator is finished, then set it to the new end before playing
@@ -104,6 +134,12 @@ export class Timeline {
     }
 
     this.play();
+  }
+
+  // Add actions to the map as they come in
+  addActionToMap(action: Action): void {
+    const { id } = action;
+
   }
 
 }

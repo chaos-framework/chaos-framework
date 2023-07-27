@@ -1,4 +1,4 @@
-import { Printable, isPrintable, TerminalMessageFragment } from '../../internal.js';
+import { Printable, isPrintable, TerminalMessageFragment, Chaos } from '../../internal.js';
 
 export class TerminalMessage {
   channel?: string;
@@ -30,6 +30,35 @@ export class TerminalMessage {
       fragments: this.fragments.map(fragment => typeof fragment === 'string' ? fragment : fragment.serialize())
     };
   }
+
+  static deserialize(json: TerminalMessage.Serialized): TerminalMessage {
+    const items: (string | TerminalMessageFragment)[] = [];
+
+    for (const fragment of json.fragments) {
+      if (typeof fragment === 'string') {
+        items.push(fragment);
+      } else {
+        if (fragment.type === 'entity') {
+          const entity = Chaos.getEntity(fragment.item);
+          if (entity !== undefined) {
+            items.push(new TerminalMessageFragment(entity, fragment.replacement));
+          } else {
+            items.push('???'); // TODO "unknown" string should be a static on Entity, not defined in diff places
+          }
+        }
+        if (fragment.type === 'component') {
+          const component = Chaos.allComponents.get(fragment.item);
+          if (component !== undefined) {
+            items.push(new TerminalMessageFragment(component, fragment.replacement));
+          } else {
+            items.push('???'); // TODO "unknown" string should be a static on Component, not defined in diff places
+          }
+        }
+      }
+    }
+    return new TerminalMessage(...items); // TODO destructing array again -- inefficient?
+  }
+
 }
 
 // tslint:disable-next-line: no-namespace
