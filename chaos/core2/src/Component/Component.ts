@@ -1,9 +1,9 @@
 import {  EffectContext, EffectWithContext, Entity, Mechanic, MechanicParameters, Chaos } from "../internal.js";
 
-type ComponentParent = Entity | Chaos; // TODO world, player, team, game
+export type ComponentParent = Entity | Chaos; // TODO world, player, team, game
 
 export abstract class Component<P extends ComponentParent = Entity> {
-  static mechanics: Mechanic[] = [];
+  mechanics: Mechanic[] = [];
 
   constructor(parent: P) {
 

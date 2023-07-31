@@ -22,4 +22,10 @@ describe('Mechanics', function mechanicTests() {
     const result = await subroutine.next();
     expect(result.value?.game).to.equal(testGame);
   });
+
+  it('Should register the mechanic with the instance when instantiated', async function addsContextToYieldedEffects() {
+    const mechanic = testComponent.mechanics[0];
+    expect(mechanic).to.exist;
+    expect(mechanic.messageTypes).contain('TEST_MESSAGE');
+  });
 });
