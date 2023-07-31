@@ -1,4 +1,6 @@
 export * from './types.js'
 export * from './Chaos.js'
-export * from './Component.js'
+export * from './Component/Component.js'
+export * from './Component/Mechanic.js'
 export * from './Processor.js'
+export * from './Entity.js'

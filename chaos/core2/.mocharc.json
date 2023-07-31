@@ -1,6 +1,13 @@
 {
-  "extension": ["ts"],
-  "spec": "test/**/*.spec.ts",
-  "logVerbose": "true",
-  "loader": "ts-node/esm"
+  // Specify "require" for CommonJS
+  "require": ["ts-node/register"],
+  // Specify "loader" for native ESM
+  "loader": "ts-node/esm",
+  "extensions": ["ts", "tsx"],
+  "spec": [
+    "test/**/*.spec.*"
+  ],
+  "watch-files": [
+    "src"
+  ]
 }

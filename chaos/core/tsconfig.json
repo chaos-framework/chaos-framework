@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2020",
     "experimentalDecorators": true,
-    "module": "esnext",
+    "module": "es2020",
     "declaration": true,
     "outDir": "./lib",
     "strict": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "types": ["node"],
