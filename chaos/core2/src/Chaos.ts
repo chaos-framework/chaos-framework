@@ -1,6 +1,6 @@
-import { Subroutine } from "./types.js";
+import { Game, Subroutine } from "./types.js";
 
-export abstract class Chaos {
+export class Chaos {
   // message buses
 
   // all entities
@@ -8,15 +8,17 @@ export abstract class Chaos {
 
   // all players + clients
   
+  // INJECTABLE:
   // processor
+  // action handler
+  // broadcaster
+
+  constructor(private game: Game) {
+
+  }
 
   async *broadcast(messageType: string, payload: any): Subroutine {
     
   }
 
-  // abstract *initialize
-  // abstract *onPlayerJoin
-  // abstract *onPlayerQuit
-  // abstract *reset
-  // abstract *shutdown
 }
