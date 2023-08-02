@@ -1,6 +1,8 @@
-import { Broadcast, Call, Chaos, EffectContext, EffectWithContext, Subroutine } from "../internal.js"
+import { Broadcast, Call, CallSubroutine, Chaos, EffectContext, EffectWithContext, Subroutine } from "../internal.js"
 
-export async function *process(instance: Chaos, subroutine: Subroutine): Subroutine {
+export type Processor = (instance: Chaos, subroutine: Subroutine) => Subroutine;
+
+export async function *defaultProcessor(instance: Chaos, subroutine: Subroutine): Subroutine {
   let result: IteratorResult<EffectWithContext, EffectWithContext | void>;
   let effect: EffectWithContext;
   let next: any;
@@ -10,18 +12,25 @@ export async function *process(instance: Chaos, subroutine: Subroutine): Subrout
       effect = result.value;
       if (effect) {
         // Yield the effect to allow it to be preprocessed by any plugins and/or published
-        yield effect;
+        let preprocessed = effect;
+        effect = yield effect;
+        effect ??= preprocessed; // Make it so that the function running this one doesn't have to pass it back in
 
         // Process the effect internally, if applicable
-        const newContext = deriveNewContext(effect);
         switch(effect.type) {
+          case 'FN':
           case 'CALL':
-            const { subroutine, args } = (effect as EffectWithContext<Call>).payload;
-            next = subroutine(newContext, ...args);
+            const { fn, args } = (effect as EffectWithContext<Call>).payload;
+            next = await fn(...args);
+            break;
+          case 'SUB':
+          case 'SUBROUTINE':
+            const { subroutine, args: subArgs } = (effect as EffectWithContext<CallSubroutine>).payload;
+            next = await subroutine(deriveNewContext(effect), ...subArgs);
             break;
           case 'BROADCAST':
             const { name, payload } = (effect as EffectWithContext<Broadcast>).payload;
-            const broadcast = instance.broadcast(name, payload);
+            const broadcast = instance.broadcast(name, payload); // TODO add new context
             next = broadcast;
             break;
           default:

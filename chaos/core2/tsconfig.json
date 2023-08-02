@@ -16,6 +16,6 @@
 		"files": true,
 		"experimentalResolver": true
 	},
-  "include": ["src"],
-  "exclude": ["node_modules", "**/test/*", "**/*.spec.ts"]
+  "include": ["src", "test"],
+  "exclude": ["node_modules"]
 }

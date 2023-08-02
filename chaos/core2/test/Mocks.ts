@@ -1,3 +1,14 @@
-import { Chaos } from "../src/internal.js";
+import { Chaos, EffectContext, Subroutine } from "../src/internal.js";
 
-export class TestGame extends Chaos {}
+async function *emptySubroutine(context: EffectContext, payload: any): Subroutine {}
+
+export class TestGame extends Chaos {
+  constructor() {
+    super({
+      initialize: emptySubroutine,
+      onPlayerJoin: emptySubroutine,
+      onPlayerQuit: emptySubroutine,
+      reset: emptySubroutine
+    }, {});
+  }
+}

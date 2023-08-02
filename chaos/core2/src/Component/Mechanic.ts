@@ -1,4 +1,4 @@
-import { MechanicParameters, Mechanic, EffectContext, EffectWithContext, Component, ComponentParent } from "../internal.js";
+import { MechanicParameters, Mechanic, EffectContext, EffectWithContext, Component } from "../internal.js";
 
 // Decorates a mechanic, binding passed context to yielded effects and registering with the message bus
 export function mechanic(messageType: string, scope?: string): any

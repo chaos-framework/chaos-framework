@@ -24,20 +24,24 @@ export type EffectWithContext<T = Effect> = T & EffectContext;
 export type Broadcast = Effect<'BROADCAST', { name: string, payload: any}>;
 export const broadcast = (name: string, payload: any): Broadcast => ({ type: 'BROADCAST', payload: { name, payload }});
 
-export type Call = Effect<'CALL', { subroutine: CallableSubroutine, args: any[] }>;
-export const call = (subroutine: Subroutine, ...args: any[]) => ['RUN', subroutine, args];
+export type CallSubroutine = Effect<'SUBROUTINE' | 'SUB', { subroutine: CallableSubroutine, args: any[] }>;
+
+export type Call = Effect<'CALL' | 'FN', { fn: Function, args: any[] }>;
+export const call = (fn: Function, ...args: any[]) => ['CALL', fn, args];
 
 export type Subroutine = AsyncGenerator<EffectWithContext, EffectWithContext | void, any>;
-export type CallableSubroutine = (...args: any[]) => Promise<Subroutine>;
+export type CallableSubroutine = (context: EffectContext, ...args: any[]) => Subroutine;
 
 export type MechanicParameters = [context: EffectContext, payload: any];
 
 export type Mechanic = ((context: EffectContext, payload:any) => Promise<Subroutine>) & { messageTypes: string[], scope?: string };
 
 export type Game = {
-  initialize: Subroutine,
-  onPlayerJoin: Subroutine,
-  onPlayerQuit: Subroutine,
-  reset: Subroutine,
-  shutdown?: Subroutine,
+  initialize: CallableSubroutine,
+  onPlayerJoin: CallableSubroutine,
+  onPlayerQuit: CallableSubroutine,
+  reset: CallableSubroutine,
+  shutdown?: CallableSubroutine,
 }
+
+export type Publishable = { _publish: () => void, _unpublish: () => void }
