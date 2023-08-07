@@ -4,7 +4,7 @@ import { Game, Entity, Component, Mechanic, Subroutine, CallableSubroutine, defa
 
 export type ChaosConfiguration = {
   processor?: Processor,
-  plugins: any[]
+  plugins?: any[]
 }
 
 export class Chaos extends ComponentContainer {
@@ -26,8 +26,10 @@ export class Chaos extends ComponentContainer {
   constructor(private game: Game, configuration: ChaosConfiguration) {
     super();
     this.processor = configuration.processor ?? defaultProcessor;
-    for (const plugin of configuration.plugins) {
-      this.registerPlugin(plugin);
+    if (configuration?.plugins) {
+      for (const plugin of configuration.plugins) {
+        this.registerPlugin(plugin);
+      }
     }
   }
 

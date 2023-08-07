@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 
 import { mechanic, Component, EffectContext, Chaos, Entity, Mechanic, Subroutine } from '../../src/internal.js';
-import { TestGame } from '../../test/Mocks.js';
+import { TestGame } from '../../test/Mocks.mock.js';
 
 class MechanicTestComponent extends Component {
   @mechanic('TEST_MESSAGE')

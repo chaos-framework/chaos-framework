@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 
 import { mechanic, Component, EffectContext, Chaos, Entity, Mechanic, Subroutine, defaultProcessor } from '../../src/internal.js';
-import { TestGame } from '../../test/Mocks.js';
+import { TestGame } from '../../test/Mocks.mock.js';
 
 describe('Default Processor', () => {
   it('Should yield effects back to the function calling the processor', async () => {
