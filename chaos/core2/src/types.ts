@@ -1,4 +1,4 @@
-import { Chaos, Component } from "./internal.js";
+import { AbilityParameters, ChaosInstance, CommandWithContext, Component } from "./internal.js";
 
 export interface UpdateProperties {
   target?: any,
@@ -13,7 +13,7 @@ export type Effect<T = string, P = any> = {
 
 export type EffectContext = {
   processed?: boolean,
-  game?: Chaos,
+  game?: ChaosInstance,
   depth?: number,
   previous?: EffectContext,
   parent?: Component, // TODO or ability
@@ -46,14 +46,16 @@ export type Game = {
 
 export type Publishable = { _publish: () => void, _unpublish: () => void };
 
-export type Command = { type: string, payload: any };
-export type CommandWithContext = { player: any, receivedAt: Date } & Command;
-
 export type Plugin = {
   name: string,
-  fn: (effect: EffectWithContext) => void
-}
+  onCommand?: (instance: ChaosInstance, command: CommandWithContext) => Promise<CommandWithContext | undefined>,
+  postCommand?: (instance: ChaosInstance, command: CommandWithContext) => Promise<CommandWithContext | undefined>,
+  onEffect?: (instance: ChaosInstance, effect: EffectWithContext) => Promise<EffectWithContext>,
+  postEffect?: (instance: ChaosInstance, effect: EffectWithContext) => Promise<EffectWithContext>,
+  onSerialize?: (instance: ChaosInstance, effect: EffectWithContext) => Promise<any>
+};
+
 export type RegisteredPlugin = {
   registeredAt: Date,
   active: boolean
-} & Plugin
+} & Plugin;

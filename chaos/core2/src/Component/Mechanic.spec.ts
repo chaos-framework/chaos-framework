@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import { mechanic, Component, EffectContext, Chaos, Entity, Mechanic, Subroutine } from '../../src/internal.js';
+import { mechanic, Component, EffectContext, ChaosInstance, Entity, Mechanic, Subroutine } from '../../src/internal.js';
 import { TestGame } from '../../test/Mocks.mock.js';
 
 class MechanicTestComponent extends Component {

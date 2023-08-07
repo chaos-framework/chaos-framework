@@ -1,6 +1,6 @@
-import { chaosId, Entity, Mechanic, Chaos } from "../internal.js";
+import { chaosId, Entity, Mechanic, ChaosInstance } from "../internal.js";
 
-export type ComponentParent = Entity | Chaos; // TODO world, player, team, game
+export type ComponentParent = Entity | ChaosInstance; // TODO world, player, team, game
 
 export interface ComponentConstructionParameters {
   id?: string;

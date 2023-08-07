@@ -1,15 +1,16 @@
 import { Queue } from "queue-typescript";
 
-import { Game, Entity, Component, Mechanic, Subroutine, CallableSubroutine, defaultProcessor, Processor, Command, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer } from "./internal.js";
+import { Game, Entity, Component, Mechanic, Subroutine, CallableSubroutine, defaultProcessor, Processor, Command, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer, CastCommand, CommandError, EffectWithContext, CommandHandler } from "./internal.js";
 
 export type ChaosConfiguration = {
+  commandHandler?: CommandHandler,
   processor?: Processor,
   plugins?: any[]
 }
 
-export class Chaos extends ComponentContainer {
+export class ChaosInstance extends ComponentContainer {
   entities = new Map<string, Entity>();
-  // components = new Map<string, Component>();
+  components = new Map<string, Component>();
 
   players = new Map<string, any>(); // TODO
   admins = new Map<string, any>(); // TODO
@@ -46,6 +47,7 @@ export class Chaos extends ComponentContainer {
   disconnectMechanic(mechanic: Mechanic) {
     for (const name of mechanic.messageTypes) {
       const arr = this.messageBuses.get(name);
+      // TODO optimize
       if (arr) {
         const index = arr.findIndex(result => result === mechanic);
         if (index >= 0) {
@@ -77,20 +79,31 @@ export class Chaos extends ComponentContainer {
     this.processing = true;
 
     // Iterate over commands in order they were recieved (from the front of the queue)
-    for (const command of this.queuedCommands) {
+    for (let command of this.queuedCommands) {
       // Check if this command is stale and discard if so
       if (this.isCommandStale(command)) {
-        continue; // TODO handle notifying client of error?
+        continue; // TODO handle notifying client of "failure"?
       }
 
-      // TODO let command plugins handle
+      
 
-      // TODO turn a command into a subroutine
-      const subroutine = {} as unknown as Subroutine;
-
-    }
+      }
 
     this.processing = false;
+  }
+
+  handleCast(cast: CastCommand): Subroutine {
+    const caster = this.entities.get(cast.payload.caster);
+    if (!caster) {
+      throw new CommandError(`Entity with id ${cast.payload.caster} not found.`) 
+    }
+    const ability = caster.abilities.get(cast.payload.ability)?.get(cast.payload.grantedBy);
+    if (!ability) {
+      throw new CommandError(`Ability with name ${cast.payload.ability} and granter ${cast.payload.grantedBy} not found.`) 
+    }
+
+    const processedParams = ability.processParameters(this, cast.payload.parameters);
+    return ability.cast({ depth: 0 }, processedParams);
   }
 
   isCommandStale(command: CommandWithContext) {

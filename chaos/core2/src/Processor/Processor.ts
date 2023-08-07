@@ -1,8 +1,8 @@
-import { Broadcast, Call, CallSubroutine, Chaos, EffectContext, EffectWithContext, Subroutine } from "../internal.js"
+import { Broadcast, Call, CallSubroutine, ChaosInstance, EffectContext, EffectWithContext, Subroutine } from "../internal.js"
 
-export type Processor = (instance: Chaos, subroutine: Subroutine) => Subroutine;
+export type Processor = (instance: ChaosInstance, subroutine: Subroutine) => Subroutine;
 
-export async function *defaultProcessor(instance: Chaos, subroutine: Subroutine): Subroutine {
+export async function *defaultProcessor(instance: ChaosInstance, subroutine: Subroutine): Subroutine {
   let result: IteratorResult<EffectWithContext, EffectWithContext | void>;
   let effect: EffectWithContext;
   let next: any;
@@ -26,7 +26,7 @@ export async function *defaultProcessor(instance: Chaos, subroutine: Subroutine)
           case 'SUB':
           case 'SUBROUTINE':
             const { subroutine, args: subArgs } = (effect as EffectWithContext<CallSubroutine>).payload;
-            next = await subroutine(deriveNewContext(effect), ...subArgs);
+            next = subroutine(deriveNewContext(effect), ...subArgs);
             break;
           case 'BROADCAST':
             const { name, payload } = (effect as EffectWithContext<Broadcast>).payload;

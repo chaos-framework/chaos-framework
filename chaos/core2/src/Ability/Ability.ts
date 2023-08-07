@@ -1,9 +1,4 @@
-import { Chaos, AbilityParameterDefinition, AbilityParameters, BadAbilityParametersError, Component, EffectContext, Entity, Subroutine, ProcessedParams } from "../internal.js";
-
-export type BoundAbility = {
-  ability: Ability,
-  grantedBy?: Entity | Component;
-};
+import { ChaosInstance, AbilityParameterDefinition, AbilityParameters, BadAbilityParametersError, Component, EffectContext, Entity, Subroutine, ProcessedParams } from "../internal.js";
 
 // TODO ability decorator to add parameter context and register with the instance
 
@@ -12,14 +7,14 @@ export abstract class Ability {
 
   static parameters: AbilityParameters;
 
-  abstract fire(context: EffectContext, payload: any): Subroutine;
+  abstract cast(context: EffectContext, payload: any): Subroutine;
 
   getParameters(): AbilityParameters {
     return (this.constructor as any).parameters || [];
   }
 
   // Ensures all parameters were passed correctly
-  processParameters(instance: Chaos, params: any): any {
+  processParameters<T extends AbilityParameters>(instance: ChaosInstance, params: any): ProcessedParams<T> {
     // Make sure we got an object
     if (typeof params != 'object') {
       throw new BadAbilityParametersError('Parameters not supplied in correct format');
@@ -56,34 +51,9 @@ export abstract class Ability {
           processed[name] = value;
           break;
       }
-
     }
 
     return processed;
   }
 
-}
-
-// EXAMPLE
-class Fireball extends Ability {
-  name = "Fireball"
-
-  static parameters = {
-    "Target": {
-      type: 'entity',
-      required: true
-    } as const,
-    "Power": {
-      'type': "number",
-      max: 50
-    },
-    "Powerrrrr": {
-      'type': 'string',
-      maxLength: 50
-    } as const
-  } as const;
-
-  async *fire(context: EffectContext, payload: ProcessedParams<typeof Fireball.parameters>): Subroutine {
-    payload.target
-  }
 }

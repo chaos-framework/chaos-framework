@@ -1,4 +1,4 @@
-import { Chaos, Component, World, Vector2, chaosId, ComponentContainer } from "../internal.js";
+import { ChaosInstance, Component, World, Vector2, chaosId, ComponentContainer } from "../internal.js";
 
 export interface EntityConstructionParameters {
   id?: string,
@@ -17,7 +17,7 @@ export class Entity extends ComponentContainer {
 
   published = false;
 
-  constructor(private game: Chaos, params: EntityConstructionParameters = {}) {
+  constructor(private game: ChaosInstance, params: EntityConstructionParameters = {}) {
     super();
     this.id = params.id || chaosId();
     this.name = params.name || 'Unnamed';
@@ -31,7 +31,7 @@ export class Entity extends ComponentContainer {
 
   }
 
-  static deserialize(game: Chaos, serialized: SerializedEntity): Entity {
+  static deserialize(game: ChaosInstance, serialized: SerializedEntity): Entity {
     return new Entity(game); // TODO
   }
 }
