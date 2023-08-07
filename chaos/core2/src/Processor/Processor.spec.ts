@@ -5,6 +5,19 @@ import { mechanic, Component, EffectContext, Chaos, Entity, Mechanic, Subroutine
 import { TestGame } from '../../test/Mocks.js';
 
 describe('Default Processor', () => {
+  it('Should yield effects back to the function calling the processor', async () => {
+    const simpleEffect = { type: 'BROADCAST', payload: { name: 'TEST_BROADCAST', payload: {} }};
+
+    async function *simpleSubroutine(context: EffectContext, payload: any): Subroutine {
+      yield simpleEffect;
+    }
+    const processor = defaultProcessor(new TestGame(), simpleSubroutine({}, {}));
+
+    const result = await processor.next();
+
+    expect(result.value).to.equal(simpleEffect);
+  });
+
   it('Should pass the proper subroutine back on being yielded a BROADCAST', async () => {
     let returned: any;
     async function *broadcastingSubroutine(context: EffectContext, payload: any): Subroutine {

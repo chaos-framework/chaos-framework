@@ -1,20 +1,37 @@
-import { Chaos, Component, World, Vector2 } from "../internal.js";
+import { Chaos, Component, World, Vector2, chaosId, ComponentContainer } from "../internal.js";
 
-export class Entity {
-  components = new Map<string, Component>();
+export interface EntityConstructionParameters {
+  id?: string,
+  name?: string
+}
 
-  constructor(private game: Chaos) {}
+export interface SerializedEntity {
 
-  _attach(component: Component) {
-    
+}
+
+export class Entity extends ComponentContainer {
+  readonly id: string;
+  name: string;
+
+  position!: Vector2;
+
+  published = false;
+
+  constructor(private game: Chaos, params: EntityConstructionParameters = {}) {
+    super();
+    this.id = params.id || chaosId();
+    this.name = params.name || 'Unnamed';
   }
-
-  _detach(component: Component) {
-
-  }
-
   _publish(world: World, location: Vector2) { }
   _unpublish() { }
 
   _move() {}
+
+  serialize() {
+
+  }
+
+  static deserialize(game: Chaos, serialized: SerializedEntity): Entity {
+    return new Entity(game); // TODO
+  }
 }

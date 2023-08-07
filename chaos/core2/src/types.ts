@@ -42,6 +42,18 @@ export type Game = {
   onPlayerQuit: CallableSubroutine,
   reset: CallableSubroutine,
   shutdown?: CallableSubroutine,
-}
+};
 
-export type Publishable = { _publish: () => void, _unpublish: () => void }
+export type Publishable = { _publish: () => void, _unpublish: () => void };
+
+export type Command = { type: string, payload: any };
+export type CommandWithContext = { player: any, receivedAt: Date } & Command;
+
+export type Plugin = {
+  name: string,
+  fn: (effect: EffectWithContext) => void
+}
+export type RegisteredPlugin = {
+  registeredAt: Date,
+  active: boolean
+} & Plugin
