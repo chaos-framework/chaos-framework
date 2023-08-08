@@ -8,15 +8,15 @@ import { MockSubroutine } from './Processor.mock.js';
 
 describe('Generic Processors', () => {
   describe('buildProcessor', () => {
-    describe('Before', () => {
+    describe('beforeEach', () => {
       it('Should call the before step and yield the modified effect', async () => {
         let called = false;
-        const before = async (instance: ChaosInstance, effect: EffectWithContext) => {
+        const beforeEach = async (instance: ChaosInstance, effect: EffectWithContext) => {
           called = true;
           return broadcast('MODIFIED');
         }
   
-        const processor = buildProcessor(before);
+        const processor = buildProcessor({ beforeEach });
         const subroutine = processor(new TestGame, MockSubroutine());
   
         const result = await subroutine.next();
@@ -26,10 +26,10 @@ describe('Generic Processors', () => {
       });
   
       it('Should yield the original effect if none returned from the before step', async () => {
-        const before = async (instance: ChaosInstance, effect: EffectWithContext) => {
+        const beforeEach = async (instance: ChaosInstance, effect: EffectWithContext) => {
         }
   
-        const processor = buildProcessor(before);
+        const processor = buildProcessor({ beforeEach });
         const subroutine = processor(new TestGame, MockSubroutine());
   
         const result = await subroutine.next();
@@ -50,11 +50,11 @@ describe('Generic Processors', () => {
     describe('After', () => {
       it('Should call the after step', async () => {
         let called = false;
-        const after = async (instance: ChaosInstance, effect: EffectWithContext) => {
+        const afterEach = async (instance: ChaosInstance, effect: EffectWithContext) => {
           called = true;
         }
 
-        const processor = buildProcessor(undefined, after);
+        const processor = buildProcessor({ afterEach });
         const subroutine = processor(new TestGame, MockSubroutine());
   
         await subroutine.next();
@@ -66,7 +66,7 @@ describe('Generic Processors', () => {
       it('Should pass the results of after to the subprocess/subroutine', async () => {
         let passedDown: any;
 
-        const after = async (instance: ChaosInstance, effect: EffectWithContext) => {
+        const afterEach = async (instance: ChaosInstance, effect: EffectWithContext) => {
           return broadcast('PASSED_DOWN');
         }
 
@@ -74,7 +74,7 @@ describe('Generic Processors', () => {
           passedDown = yield broadcast('PASSED_UP');
         }
 
-        const processor = buildProcessor(undefined, after);
+        const processor = buildProcessor({ afterEach });
         const subroutine = processor(new TestGame, MockSubroutine(), [subprocess]);
   
         await subroutine.next();
