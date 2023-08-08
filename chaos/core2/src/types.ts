@@ -22,14 +22,14 @@ export type EffectContext = {
 export type EffectWithContext<T = Effect> = T & EffectContext;
 
 export type Broadcast = Effect<'BROADCAST', { name: string, payload: any}>;
-export const broadcast = (name: string, payload: any): Broadcast => ({ type: 'BROADCAST', payload: { name, payload }});
+export const broadcast = (name: string, payload?: any): Broadcast => ({ type: 'BROADCAST', payload: { name, payload }});
 
 export type CallSubroutine = Effect<'SUBROUTINE' | 'SUB', { subroutine: CallableSubroutine, args: any[] }>;
 
 export type Call = Effect<'CALL' | 'FN', { fn: Function, args: any[] }>;
 export const call = (fn: Function, ...args: any[]) => ['CALL', fn, args];
 
-export type Subroutine = AsyncGenerator<EffectWithContext, EffectWithContext | void, any>;
+export type Subroutine = AsyncGenerator<EffectWithContext, EffectWithContext | void, EffectWithContext>;
 export type CallableSubroutine = (context: EffectContext, ...args: any[]) => Subroutine;
 
 export type MechanicParameters = [context: EffectContext, payload: any];

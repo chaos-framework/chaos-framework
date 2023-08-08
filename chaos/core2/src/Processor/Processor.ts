@@ -1,49 +1,40 @@
-import { Broadcast, Call, CallSubroutine, ChaosInstance, EffectContext, EffectWithContext, Subroutine } from "../internal.js"
+import { ChaosInstance, EffectWithContext, Subroutine } from '../internal.js'
 
-export type Processor = (instance: ChaosInstance, subroutine: Subroutine) => Subroutine;
+export type Processor = (instance: ChaosInstance, subroutine: Subroutine, subprocesses?: Processor[]) => Subroutine;
+export type ProcessorBeforeStep = (instance: ChaosInstance, effect: EffectWithContext) => Promise<EffectWithContext | void>;
+export type ProcessorAfterStep = (instance: ChaosInstance, effect: EffectWithContext) => Promise<EffectWithContext | void>;
 
-export async function *defaultProcessor(instance: ChaosInstance, subroutine: Subroutine): Subroutine {
-  let result: IteratorResult<EffectWithContext, EffectWithContext | void>;
-  let effect: EffectWithContext;
-  let next: any;
-  do {
-    result = await subroutine.next(next);
-    if (result.value) {
-      effect = result.value;
-      if (effect) {
-        // Yield the effect to allow it to be preprocessed by any plugins and/or published
-        let preprocessed = effect;
-        effect = yield effect;
-        effect ??= preprocessed; // Make it so that the function running this one doesn't have to pass it back in
+export const buildProcessor = (before?: ProcessorBeforeStep, after?: ProcessorAfterStep): Processor => {
+  async function *processor(instance: ChaosInstance, subroutine: Subroutine, subprocesses?: Processor[]): Subroutine {
+    let subprocess: Subroutine | undefined = undefined;
+    if (subprocesses && subprocesses.length > 0) {
+      subprocess = subprocesses[0](instance, subroutine, subprocesses.slice(1));
+    }
 
-        // Process the effect internally, if applicable
-        switch(effect.type) {
-          case 'FN':
-          case 'CALL':
-            const { fn, args } = (effect as EffectWithContext<Call>).payload;
-            next = await fn(...args);
-            break;
-          case 'SUB':
-          case 'SUBROUTINE':
-            const { subroutine, args: subArgs } = (effect as EffectWithContext<CallSubroutine>).payload;
-            next = subroutine(deriveNewContext(effect), ...subArgs);
-            break;
-          case 'BROADCAST':
-            const { name, payload } = (effect as EffectWithContext<Broadcast>).payload;
-            const broadcast = instance.broadcast(name, payload); // TODO add new context
-            next = broadcast;
-            break;
-          default:
-            next = effect;
+    let result: IteratorResult<EffectWithContext, EffectWithContext | void>;
+    let effect: EffectWithContext | void;
+    let next: any = undefined;
+  
+    do {
+      result = subprocess ? await subprocess.next(next) : await subroutine.next(next);
+      if (result.value) {
+        effect = result.value;
+  
+        // Run the before step
+        if (before) {
+          effect = await before(instance, effect) || effect;
+        }
+
+        // Reassign the effect to the result of any higher-order processes
+        next = yield effect || effect;
+
+        // Run the after step
+        if (after) {
+          next = await after(instance, next);
         }
       }
-    }
-  } while (!result.done)
-}
-
-const deriveNewContext = (previous: EffectWithContext): EffectContext => {
-  return {
-    previous,
-    depth: previous.depth ? previous.depth + 1 : 1
+    } while (result.value)
   }
+
+  return processor;
 }

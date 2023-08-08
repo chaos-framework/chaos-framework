@@ -1,4 +1,4 @@
-import { ChaosInstance, EffectContext, Subroutine } from "../src/internal.js";
+import { ChaosInstance, EffectContext, Subroutine, broadcast } from "../src/internal.js";
 
 async function *emptySubroutine(context: EffectContext, payload: any): Subroutine {}
 
@@ -12,3 +12,8 @@ export class TestGame extends ChaosInstance {
     }, {});
   }
 }
+
+export async function *MockSubroutine(): Subroutine {
+  yield broadcast('TEST');
+}
+

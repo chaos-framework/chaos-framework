@@ -1,10 +1,8 @@
 import { Queue } from "queue-typescript";
 
-import { Game, Entity, Component, Mechanic, Subroutine, CallableSubroutine, defaultProcessor, Processor, Command, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer, CastCommand, CommandError, EffectWithContext, CommandHandler } from "./internal.js";
+import { Game, Entity, Component, Mechanic, Subroutine, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer, CastCommand, CommandError, EffectWithContext, CommandHandler, EffectHandler } from "./internal.js";
 
 export type ChaosConfiguration = {
-  commandHandler?: CommandHandler,
-  processor?: Processor,
   plugins?: any[]
 }
 
@@ -15,7 +13,6 @@ export class ChaosInstance extends ComponentContainer {
   players = new Map<string, any>(); // TODO
   admins = new Map<string, any>(); // TODO
 
-  processor: Processor;
   processing = false;
   commandTimeout = 500; // Timeout, in milliseconds, for a command to be considered stale
   queuedCommands: Queue<CommandWithContext> = new Queue<CommandWithContext>;
@@ -26,7 +23,6 @@ export class ChaosInstance extends ComponentContainer {
 
   constructor(private game: Game, configuration: ChaosConfiguration) {
     super();
-    this.processor = configuration.processor ?? defaultProcessor;
     if (configuration?.plugins) {
       for (const plugin of configuration.plugins) {
         this.registerPlugin(plugin);

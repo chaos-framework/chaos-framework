@@ -1,76 +1,87 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import { mechanic, Component, EffectContext, ChaosInstance, Entity, Mechanic, Subroutine, defaultProcessor } from '../../src/internal.js';
+import { buildProcessor, ChaosInstance, EffectWithContext, broadcast, Subroutine } from '../internal.js'
+
 import { TestGame } from '../../test/Mocks.mock.js';
+import { MockSubroutine } from './Processor.mock.js';
 
-describe('Default Processor', () => {
-  it('Should yield effects back to the function calling the processor', async () => {
-    const simpleEffect = { type: 'BROADCAST', payload: { name: 'TEST_BROADCAST', payload: {} }};
+describe('Generic Processors', () => {
+  describe('buildProcessor', () => {
+    describe('Before', () => {
+      it('Should call the before step and yield the modified effect', async () => {
+        let called = false;
+        const before = async (instance: ChaosInstance, effect: EffectWithContext) => {
+          called = true;
+          return broadcast('MODIFIED');
+        }
+  
+        const processor = buildProcessor(before);
+        const subroutine = processor(new TestGame, MockSubroutine());
+  
+        const result = await subroutine.next();
+  
+        expect(called).to.be.true;
+        expect(result.value?.payload?.name).to.equal('MODIFIED');
+      });
+  
+      it('Should yield the original effect if none returned from the before step', async () => {
+        const before = async (instance: ChaosInstance, effect: EffectWithContext) => {
+        }
+  
+        const processor = buildProcessor(before);
+        const subroutine = processor(new TestGame, MockSubroutine());
+  
+        const result = await subroutine.next();
+  
+        expect(result.value?.payload?.name).to.equal('ORIGINAL');
+      });
+  
+      it('Should yield the original effect if no before step was passed', async () => {
+        const processor = buildProcessor();
+        const subroutine = processor(new TestGame, MockSubroutine());
+  
+        const result = await subroutine.next();
+  
+        expect(result.value?.payload?.name).to.equal('ORIGINAL');
+      });
+    });
 
-    async function *simpleSubroutine(context: EffectContext, payload: any): Subroutine {
-      yield simpleEffect;
-    }
-    const processor = defaultProcessor(new TestGame(), simpleSubroutine({}, {}));
+    describe('After', () => {
+      it('Should call the after step', async () => {
+        let called = false;
+        const after = async (instance: ChaosInstance, effect: EffectWithContext) => {
+          called = true;
+        }
 
-    const result = await processor.next();
+        const processor = buildProcessor(undefined, after);
+        const subroutine = processor(new TestGame, MockSubroutine());
+  
+        await subroutine.next();
+        await subroutine.next();
+  
+        expect(called).to.be.true;
+      });
 
-    expect(result.value).to.equal(simpleEffect);
+      it('Should pass the results of after to the subprocess/subroutine', async () => {
+        let passedDown: any;
+
+        const after = async (instance: ChaosInstance, effect: EffectWithContext) => {
+          return broadcast('PASSED_DOWN');
+        }
+
+        async function *subprocess(instance: ChaosInstance, subroutine: Subroutine): Subroutine {
+          passedDown = yield broadcast('PASSED_UP');
+        }
+
+        const processor = buildProcessor(undefined, after);
+        const subroutine = processor(new TestGame, MockSubroutine(), [subprocess]);
+  
+        await subroutine.next();
+        await subroutine.next();
+  
+        expect(passedDown.payload.name).to.equal("PASSED_DOWN");
+      });
+    });
   });
-
-  it('Should pass the proper subroutine back on being yielded a BROADCAST', async () => {
-    let returned: any;
-    async function *broadcastingSubroutine(context: EffectContext, payload: any): Subroutine {
-      returned = yield { type: 'BROADCAST', payload: { name: 'TEST_BROADCAST', payload: {} }};
-    }
-
-    const processor = defaultProcessor(new TestGame(), broadcastingSubroutine({}, {}));
-
-    // Run twice, so that the broadcaster is sent back down
-    await processor.next();
-    await processor.next();
-
-    expect(returned).to.exist;
-  });
-
-  it('Should pass the proper function result back on being yielded a CALL', async () => {
-    let returned: any;
-
-    const calledFn = (a: number, b: number) => (a + b);
-
-    async function *callingSubroutine(context: EffectContext, payload: any): Subroutine {
-      returned = yield { type: 'CALL', payload: { fn: calledFn, args: [10, 5] }};
-    }
-
-    const processor = defaultProcessor(new TestGame(), callingSubroutine({}, {}));
-
-    // Run twice, so that the broadcaster is sent back down
-    await processor.next();
-    await processor.next();
-
-    expect(returned).to.equal(15);
-  });
-
-  it('Should pass the proper subroutine back on being yielded a SUBROUTINE', async () => {
-    let returned: any;
-
-    async function *calledSubroutine(context: EffectContext, a: number, b: number) {
-      yield a + b;
-    };
-
-    async function *callingSubroutine(context: EffectContext, payload: any): Subroutine {
-      const sub = yield { type: 'SUBROUTINE', payload: { subroutine: calledSubroutine, args: [10, 5] }};
-      returned = await sub.next();
-    }
-
-    const processor = defaultProcessor(new TestGame(), callingSubroutine({}, {}));
-
-    // Run twice, so that the broadcaster is sent back down
-    await processor.next();
-    await processor.next();
-
-    expect(returned).to.exist;
-    expect(returned.value).to.equal(15);
-  });
-
 });
