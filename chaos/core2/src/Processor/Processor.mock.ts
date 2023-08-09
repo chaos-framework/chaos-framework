@@ -7,3 +7,5 @@ export async function *MockProcessor(instance: ChaosInstance, subroutine: Subrou
 export async function *MockSubroutine(): Subroutine {
   yield broadcast('ORIGINAL');
 }
+
+export async function *MockEmptySubroutine(): Subroutine { }

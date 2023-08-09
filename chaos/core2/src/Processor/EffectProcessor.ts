@@ -1,7 +1,7 @@
 import { nextTick } from 'process';
 import { ChaosInstance, EffectWithContext, Subroutine, buildProcessor, gameProcessor } from '../internal.js'
 
-const before = async (instance: ChaosInstance, effect: EffectWithContext): Promise<EffectWithContext | void> => {
+const beforeEach = async (instance: ChaosInstance, effect: EffectWithContext): Promise<EffectWithContext | void> => {
   for (const plugin of instance.plugins) {
     if (plugin.onEffect) {
       effect = await plugin.onEffect(instance, effect) || effect;
@@ -10,7 +10,7 @@ const before = async (instance: ChaosInstance, effect: EffectWithContext): Promi
   return effect;
 }
 
-const after = async (instance: ChaosInstance, effect: EffectWithContext): Promise<EffectWithContext | void> => {
+const afterEach = async (instance: ChaosInstance, effect: EffectWithContext): Promise<EffectWithContext | void> => {
   for (const plugin of instance.plugins) {
     if (plugin.postEffect) {
       effect = await plugin.postEffect(instance, effect) || effect;
@@ -19,4 +19,4 @@ const after = async (instance: ChaosInstance, effect: EffectWithContext): Promis
   return effect;
 }
 
-export const effectProcessor = buildProcessor(before, after); 
+export const effectProcessor = buildProcessor({ beforeEach, afterEach });

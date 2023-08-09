@@ -1,33 +1,4 @@
-import { AbilityParameters, ChaosInstance, CommandWithContext, Component } from "./internal.js";
-
-export interface UpdateProperties {
-  target?: any,
-  caster?: any,
-  using?: any
-}
-
-export type Effect<T = string, P = any> = {
-  type: T,
-  payload: P
-}
-
-export type EffectContext = {
-  processed?: boolean,
-  game?: ChaosInstance,
-  depth?: number,
-  previous?: EffectContext,
-  parent?: Component, // TODO or ability
-};
-
-export type EffectWithContext<T = Effect> = T & EffectContext;
-
-export type Broadcast = Effect<'BROADCAST', { name: string, payload: any}>;
-export const broadcast = (name: string, payload?: any): Broadcast => ({ type: 'BROADCAST', payload: { name, payload }});
-
-export type CallSubroutine = Effect<'SUBROUTINE' | 'SUB', { subroutine: CallableSubroutine, args: any[] }>;
-
-export type Call = Effect<'CALL' | 'FN', { fn: Function, args: any[] }>;
-export const call = (fn: Function, ...args: any[]) => ['CALL', fn, args];
+import { AbilityParameters, ChaosInstance, CommandWithContext, Component, EffectContext, EffectWithContext } from "./internal.js";
 
 export type Subroutine = AsyncGenerator<EffectWithContext, EffectWithContext | void, EffectWithContext>;
 export type CallableSubroutine = (context: EffectContext, ...args: any[]) => Subroutine;

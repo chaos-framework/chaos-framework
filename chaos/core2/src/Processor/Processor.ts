@@ -19,12 +19,12 @@ export const buildProcessor = (steps: ProcessorArguments = {}): Processor => {
     let result: IteratorResult<EffectWithContext, EffectWithContext | void>;
     let effect: EffectWithContext | void;
     let next: any = undefined;
-  
+
     do {
       result = subprocess ? await subprocess.next(next) : await subroutine.next(next);
       if (result.value) {
         effect = result.value;
-  
+
         // Run the before step
         if (steps.beforeEach) {
           effect = await steps.beforeEach(instance, effect) || effect;
@@ -39,6 +39,9 @@ export const buildProcessor = (steps: ProcessorArguments = {}): Processor => {
         }
       }
     } while (result.value)
+
+    // Call next on the children one more time to ensure cleanup if doing a yield*
+    subprocess ? await subprocess.next() : await subroutine.next();
 
     if (steps.afterAll) {
       await steps.afterAll(instance);

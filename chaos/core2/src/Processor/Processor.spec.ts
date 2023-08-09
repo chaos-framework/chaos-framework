@@ -4,7 +4,7 @@ import 'mocha';
 import { buildProcessor, ChaosInstance, EffectWithContext, broadcast, Subroutine } from '../internal.js'
 
 import { TestGame } from '../../test/Mocks.mock.js';
-import { MockSubroutine } from './Processor.mock.js';
+import { MockEmptySubroutine, MockSubroutine } from './Processor.mock.js';
 
 describe('Generic Processors', () => {
   describe('buildProcessor', () => {
@@ -47,7 +47,7 @@ describe('Generic Processors', () => {
       });
     });
 
-    describe('After', () => {
+    describe('afterEach', () => {
       it('Should call the after step', async () => {
         let called = false;
         const afterEach = async (instance: ChaosInstance, effect: EffectWithContext) => {
@@ -81,6 +81,32 @@ describe('Generic Processors', () => {
         await subroutine.next();
   
         expect(passedDown.payload.name).to.equal("PASSED_DOWN");
+      });
+    });
+
+    describe('afterAll', () => {
+      it('Should be executed at the end of the subroutine loop.', async () => {
+        let called = false;
+        const afterAll = async (instance: ChaosInstance) => {
+          called = true;
+        }
+
+        async function *subprocess(instance: ChaosInstance, subroutine: Subroutine): Subroutine {
+          yield broadcast('1');
+          yield broadcast('2');
+          yield broadcast('3');
+        }
+
+        const processor = buildProcessor({ afterAll });
+        const subroutine = processor(new TestGame, MockEmptySubroutine(), [subprocess]);
+  
+        await subroutine.next();
+        await subroutine.next();
+        await subroutine.next();
+        expect(called).to.be.false;
+        
+        await subroutine.next();
+        expect(called).to.be.true;
       });
     });
   });
