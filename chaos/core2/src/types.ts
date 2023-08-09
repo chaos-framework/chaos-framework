@@ -20,9 +20,9 @@ export type Publishable = { _publish: () => void, _unpublish: () => void };
 export type Plugin = {
   name: string,
   onCommand?: (instance: ChaosInstance, command: CommandWithContext) => Promise<CommandWithContext | undefined>,
-  postCommand?: (instance: ChaosInstance, command: CommandWithContext) => Promise<CommandWithContext | undefined>,
+  postCommand?: (instance: ChaosInstance, command: CommandWithContext) => Promise<void>,
   onEffect?: (instance: ChaosInstance, effect: EffectWithContext) => Promise<EffectWithContext>,
-  postEffect?: (instance: ChaosInstance, effect: EffectWithContext) => Promise<EffectWithContext>,
+  postEffect?: (instance: ChaosInstance, effect: EffectWithContext) => Promise<void>,
   onSerialize?: (instance: ChaosInstance, effect: EffectWithContext) => Promise<any>
 };
 
