@@ -1,5 +1,5 @@
 import { nextTick } from 'process';
-import { ChaosInstance, EffectWithContext, Subroutine, buildProcessor, gameProcessor } from '../internal.js'
+import { ChaosInstance, EffectWithContext, Subroutine, buildProcessor } from '../internal.js'
 
 const beforeEach = async (instance: ChaosInstance, effect: EffectWithContext): Promise<EffectWithContext | void> => {
   for (const plugin of instance.plugins) {

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import { buildProcessor, ChaosInstance, EffectWithContext, broadcast, Subroutine } from '../internal.js'
+import { buildProcessor, ChaosInstance, EffectWithContext, broadcast, Subroutine, EffectContext, Processor, Process } from '../internal.js'
 
 import { TestGame } from '../../test/Mocks.mock.js';
 import { MockEmptySubroutine, MockSubroutine } from './Processor.mock.js';
@@ -22,7 +22,7 @@ describe('Generic Processors', () => {
         const result = await subroutine.next();
   
         expect(called).to.be.true;
-        expect(result.value?.payload?.name).to.equal('MODIFIED');
+        expect((result.value as EffectWithContext).payload?.name).to.equal('MODIFIED');
       });
   
       it('Should yield the original effect if none returned from the before step', async () => {
@@ -34,7 +34,7 @@ describe('Generic Processors', () => {
   
         const result = await subroutine.next();
   
-        expect(result.value?.payload?.name).to.equal('ORIGINAL');
+        expect((result.value as EffectWithContext).payload?.name).to.equal('ORIGINAL');
       });
   
       it('Should yield the original effect if no before step was passed', async () => {
@@ -43,7 +43,7 @@ describe('Generic Processors', () => {
   
         const result = await subroutine.next();
   
-        expect(result.value?.payload?.name).to.equal('ORIGINAL');
+        expect((result.value as EffectWithContext).payload?.name).to.equal('ORIGINAL');
       });
     });
 
@@ -107,6 +107,24 @@ describe('Generic Processors', () => {
         
         await subroutine.next();
         expect(called).to.be.true;
+      });
+    });
+
+    describe('Returning subroutines', () => {
+      it('Should return a subroutine if yielded from a subprocess', async () => {
+        async function *subprocess(instance: ChaosInstance, subroutine: Subroutine, subprocesses?: Processor[]): Process {
+          yield * subroutine;
+          return MockSubroutine();
+        }
+
+        const processor = buildProcessor();
+        const process = processor(new TestGame, MockEmptySubroutine(), [subprocess]);
+
+        await process.next();
+        let result = await process.next();
+
+        expect(result.done).to.be.true;
+        expect(typeof result.value).to.equal('object');
       });
     });
   });
