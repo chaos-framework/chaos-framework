@@ -1,6 +1,7 @@
 import { Queue } from "queue-typescript";
 
-import { Game, Entity, Component, Mechanic, Subroutine, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer, CastCommand, CommandError, EffectWithContext, CommandHandler, EffectHandler } from "./internal.js";
+import { Game, Entity, Component, Mechanic, Subroutine, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer, CastCommand, CommandError, EffectWithContext, CommandHandler, EffectHandler, GameProcessor, UpdateProcessor, EffectProcessor } from "./internal.js";
+import { NetworkProcessor } from "./Processor/NetworkProcessor.js";
 
 export type ChaosConfiguration = {
   plugins?: any[]
@@ -81,11 +82,58 @@ export class ChaosInstance extends ComponentContainer {
         continue; // TODO handle notifying client of "failure"?
       }
 
-      
+      let rejected = false;
 
+      for (const plugin of this.plugins) {
+        if (plugin.onCommand) {
+          const processedCommand = await plugin.onCommand(this, command);
+          if (!processedCommand) {
+            // one of the plugins has rejected this command, no need to keep processing
+            rejected = true;
+            break;
+          }
+          command = processedCommand;
+        }
       }
 
+      if (rejected) {
+        // TODO let the client know, somehow
+        continue;
+      }
+
+      const subroutine = this.handleCommand(command)!;
+      await this.runSubroutine(subroutine);
+
+    }
     this.processing = false;
+  }
+
+  async runSubroutine(subroutine: Subroutine) {
+    const processorStack = this.getProcessorStack(subroutine);
+
+    let result: any = { value: undefined, done: false };
+
+    while (!result.done) {
+      result = await processorStack.next(result.value);
+    }
+
+    // If the subroutine has RETURNED another subroutine as a "followup", we should execute that as well
+    if (result.done && result.value && typeof result === 'object') {
+      await this.runSubroutine(result.value);
+    }
+  }
+
+  getProcessorStack(subroutine: Subroutine) {
+    return NetworkProcessor(this, subroutine, [UpdateProcessor, EffectProcessor, GameProcessor]);
+  }
+
+  handleCommand(command: CommandWithContext): Subroutine | undefined {
+    switch (command.type) {
+      case 'CAST':
+        return this.handleCommand(command);
+      default:
+        return undefined;
+    }
   }
 
   handleCast(cast: CastCommand): Subroutine {

@@ -3,7 +3,7 @@ import 'mocha';
 
 import { buildProcessor, ChaosInstance, EffectWithContext, broadcast, Subroutine, EffectContext, Processor, Process } from '../internal.js'
 
-import { TestGame } from '../../test/Mocks.mock.js';
+import { TestInstance } from '../../test/Mocks.mock.js';
 import { MockEmptySubroutine, MockSubroutine } from './Processor.mock.js';
 
 describe('Generic Processors', () => {
@@ -17,7 +17,7 @@ describe('Generic Processors', () => {
         }
   
         const processor = buildProcessor({ beforeEach });
-        const subroutine = processor(new TestGame, MockSubroutine());
+        const subroutine = processor(new TestInstance, MockSubroutine());
   
         const result = await subroutine.next();
   
@@ -30,7 +30,7 @@ describe('Generic Processors', () => {
         }
   
         const processor = buildProcessor({ beforeEach });
-        const subroutine = processor(new TestGame, MockSubroutine());
+        const subroutine = processor(new TestInstance, MockSubroutine());
   
         const result = await subroutine.next();
   
@@ -39,7 +39,7 @@ describe('Generic Processors', () => {
   
       it('Should yield the original effect if no before step was passed', async () => {
         const processor = buildProcessor();
-        const subroutine = processor(new TestGame, MockSubroutine());
+        const subroutine = processor(new TestInstance, MockSubroutine());
   
         const result = await subroutine.next();
   
@@ -55,7 +55,7 @@ describe('Generic Processors', () => {
         }
 
         const processor = buildProcessor({ afterEach });
-        const subroutine = processor(new TestGame, MockSubroutine());
+        const subroutine = processor(new TestInstance, MockSubroutine());
   
         await subroutine.next();
         await subroutine.next();
@@ -75,7 +75,7 @@ describe('Generic Processors', () => {
         }
 
         const processor = buildProcessor({ afterEach });
-        const subroutine = processor(new TestGame, MockSubroutine(), [subprocess]);
+        const subroutine = processor(new TestInstance, MockSubroutine(), [subprocess]);
   
         await subroutine.next();
         await subroutine.next();
@@ -98,7 +98,7 @@ describe('Generic Processors', () => {
         }
 
         const processor = buildProcessor({ afterAll });
-        const subroutine = processor(new TestGame, MockEmptySubroutine(), [subprocess]);
+        const subroutine = processor(new TestInstance, MockEmptySubroutine(), [subprocess]);
   
         await subroutine.next();
         await subroutine.next();
@@ -118,7 +118,7 @@ describe('Generic Processors', () => {
         }
 
         const processor = buildProcessor();
-        const process = processor(new TestGame, MockEmptySubroutine(), [subprocess]);
+        const process = processor(new TestInstance, MockEmptySubroutine(), [subprocess]);
 
         await process.next();
         let result = await process.next();

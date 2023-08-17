@@ -1,5 +1,4 @@
-import { nextTick } from 'process';
-import { ChaosInstance, EffectWithContext, Subroutine, buildProcessor } from '../internal.js'
+import { ChaosInstance, EffectWithContext, buildProcessor } from '../internal.js'
 
 const beforeEach = async (instance: ChaosInstance, effect: EffectWithContext): Promise<EffectWithContext | void> => {
 }
@@ -12,4 +11,4 @@ const afterAll = async (instance: ChaosInstance): Promise<void> => {
   // TODO broadcast to clients
 }
 
-export const networkProcessor = buildProcessor({ beforeEach, afterEach, afterAll });
+export const NetworkProcessor = buildProcessor({ beforeEach, afterEach, afterAll });

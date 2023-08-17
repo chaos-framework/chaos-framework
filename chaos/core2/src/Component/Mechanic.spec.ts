@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 
 import { mechanic, Component, EffectContext, ChaosInstance, Entity, Mechanic, Subroutine } from '../../src/internal.js';
-import { TestGame } from '../../test/Mocks.mock.js';
+import { TestInstance } from '../../test/Mocks.mock.js';
 
 class MechanicTestComponent extends Component {
   @mechanic('TEST_MESSAGE')
@@ -12,7 +12,7 @@ class MechanicTestComponent extends Component {
 }
 
 describe('Mechanics', function mechanicTests() {
-  const testGame = new TestGame();
+  const testGame = new TestInstance();
   const testEntity = new Entity(testGame);
   const testComponent = new MechanicTestComponent(testEntity);
   const testContext: EffectContext = { game: testGame };

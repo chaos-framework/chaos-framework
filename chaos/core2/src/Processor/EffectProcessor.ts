@@ -19,4 +19,4 @@ const afterEach = async (instance: ChaosInstance, effect: EffectWithContext): Pr
   return effect;
 }
 
-export const effectProcessor = buildProcessor({ beforeEach, afterEach });
+export const EffectProcessor = buildProcessor({ beforeEach, afterEach });

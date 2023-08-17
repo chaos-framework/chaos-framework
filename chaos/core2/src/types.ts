@@ -1,6 +1,6 @@
 import { AbilityParameters, ChaosInstance, CommandWithContext, Component, EffectContext, EffectWithContext } from "./internal.js";
 
-export type Subroutine = AsyncGenerator<EffectWithContext, Subroutine | void, EffectWithContext>;
+export type Subroutine = AsyncGenerator<EffectWithContext, Subroutine | void, EffectWithContext | undefined>;
 export type SubroutineResult = IteratorResult<EffectWithContext, Subroutine | void>;
 export type CallableSubroutine = (context: EffectContext, ...args: any[]) => Subroutine;
 

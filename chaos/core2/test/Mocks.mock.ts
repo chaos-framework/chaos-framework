@@ -2,7 +2,7 @@ import { ChaosInstance, EffectContext, Subroutine, broadcast } from "../src/inte
 
 async function *emptySubroutine(context: EffectContext, payload: any): Subroutine {}
 
-export class TestGame extends ChaosInstance {
+export class TestInstance extends ChaosInstance {
   constructor() {
     super({
       initialize: emptySubroutine,

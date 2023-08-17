@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 
 import { mechanic, Component, EffectContext, ChaosInstance, Entity, Mechanic, Subroutine, GameProcessor } from '../internal.js';
-import { TestGame } from '../../test/Mocks.mock.js';
+import { TestInstance } from '../../test/Mocks.mock.js';
 
 describe('GameProcessor', () => {
   it('Should pass the proper subroutine back on being yielded a BROADCAST', async () => {
@@ -11,7 +11,7 @@ describe('GameProcessor', () => {
       returned = yield { type: 'BROADCAST', payload: { name: 'TEST_BROADCAST', payload: {} }};
     }
 
-    const processor = GameProcessor(new TestGame(), broadcastingSubroutine({}, {}));
+    const processor = GameProcessor(new TestInstance(), broadcastingSubroutine({}, {}));
 
     // Run twice, so that the broadcaster is sent back down
     await processor.next();
@@ -29,7 +29,7 @@ describe('GameProcessor', () => {
       returned = yield { type: 'CALL', payload: { fn: calledFn, args: [10, 5] }};
     }
 
-    const processor = GameProcessor(new TestGame(), callingSubroutine({}, {}));
+    const processor = GameProcessor(new TestInstance(), callingSubroutine({}, {}));
 
     // Run twice, so that the broadcaster is sent back down
     await processor.next();
@@ -50,7 +50,7 @@ describe('GameProcessor', () => {
       returned = await (sub as unknown as AsyncGenerator).next();
     }
 
-    const processor = GameProcessor(new TestGame(), callingSubroutine({}, {}));
+    const processor = GameProcessor(new TestInstance(), callingSubroutine({}, {}));
 
     // Run twice, so that the broadcaster is sent back down
     await processor.next();
