@@ -22,9 +22,5 @@ export abstract class Processor {
         next ??= effect;
       }
     } while (result.value && !result.done)
-
-    if (result.done) {
-      return next || result;
-    }
   }
 }

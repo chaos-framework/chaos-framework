@@ -1,7 +1,6 @@
 import { Queue } from "queue-typescript";
 
-import { Game, Entity, Component, Mechanic, Subroutine, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer, CastCommand, CommandError, EffectWithContext, CommandHandler, EffectHandler, GameProcessor, UpdateProcessor, EffectProcessor } from "./internal.js";
-import { NetworkProcessor } from "./Processor/NetworkProcessor.js";
+import { Game, Entity, Component, Mechanic, Subroutine, CommandWithContext, RegisteredPlugin, Plugin, ComponentContainer, CastCommand, CommandError, EffectWithContext, GameProcessor} from "./internal.js";
 
 export type ChaosConfiguration = {
   plugins?: any[]
@@ -110,11 +109,12 @@ export class ChaosInstance extends ComponentContainer {
 
   async runSubroutine(subroutine: Subroutine) {
     const processorStack = this.getProcessorStack(subroutine);
+    const process = processorStack.process(subroutine);
 
     let result: any = { value: undefined, done: false };
 
     while (!result.done) {
-      result = await processorStack.next(result.value);
+      result = await process.next(result.value);
     }
 
     // If the subroutine has RETURNED another subroutine as a "followup", we should execute that as well
@@ -124,7 +124,7 @@ export class ChaosInstance extends ComponentContainer {
   }
 
   getProcessorStack(subroutine: Subroutine) {
-    return NetworkProcessor(this, subroutine, [UpdateProcessor, EffectProcessor, GameProcessor]);
+    return new GameProcessor(this);
   }
 
   handleCommand(command: CommandWithContext): Subroutine | undefined {

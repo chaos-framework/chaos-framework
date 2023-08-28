@@ -25,6 +25,12 @@ export type CallSubroutine = Effect<'SUBROUTINE' | 'SUB', { subroutine: Callable
 export type Call = Effect<'CALL' | 'FN', { fn: Function, args: any[] }>;
 export const call = (fn: Function, ...args: any[]) => ['CALL', fn, args];
 
+export type Listen = Effect<'LISTEN', { fn: Function, args: any[] }>;
+export const listen = (fn: Function, ...args: any[]) => ['LISTEN', fn, args];
+
+export type Followup = Effect<'FOLLOWUP', { fn: Function, args: any[] }>;
+export const followup = (fn: Function, ...args: any[]) => ['FOLLOWUP', fn, args];
+
 // UPDATES
 
 export type CommonUpdateProperties = {

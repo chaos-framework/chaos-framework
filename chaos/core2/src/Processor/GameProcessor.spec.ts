@@ -4,18 +4,19 @@ import 'mocha';
 import { mechanic, Component, EffectContext, ChaosInstance, Entity, Mechanic, Subroutine, GameProcessor } from '../internal.js';
 import { TestInstance } from '../../test/Mocks.mock.js';
 
-describe('GameProcessor', () => {
+describe.only('GameProcessor', () => {
   it('Should pass the proper subroutine back on being yielded a BROADCAST', async () => {
     let returned: any;
     async function *broadcastingSubroutine(context: EffectContext, payload: any): Subroutine {
       returned = yield { type: 'BROADCAST', payload: { name: 'TEST_BROADCAST', payload: {} }};
     }
 
-    const processor = GameProcessor(new TestInstance(), broadcastingSubroutine({}, {}));
+    const processor = new GameProcessor(new TestInstance());
+    const process = processor.process(broadcastingSubroutine({}, {}));
 
     // Run twice, so that the broadcaster is sent back down
-    await processor.next();
-    await processor.next();
+    let result = await process.next();
+    await process.next(result.value!);
 
     expect(returned).to.exist;
   });
@@ -29,11 +30,12 @@ describe('GameProcessor', () => {
       returned = yield { type: 'CALL', payload: { fn: calledFn, args: [10, 5] }};
     }
 
-    const processor = GameProcessor(new TestInstance(), callingSubroutine({}, {}));
+    const processor = new GameProcessor(new TestInstance());
+    const process = processor.process(callingSubroutine({}, {}));
 
     // Run twice, so that the broadcaster is sent back down
-    await processor.next();
-    await processor.next();
+    let result = await process.next();
+    await process.next(result.value!);
 
     expect(returned).to.equal(15);
   });
@@ -50,11 +52,12 @@ describe('GameProcessor', () => {
       returned = await (sub as unknown as AsyncGenerator).next();
     }
 
-    const processor = GameProcessor(new TestInstance(), callingSubroutine({}, {}));
+    const processor = new GameProcessor(new TestInstance());
+    const process = callingSubroutine({}, {});
 
     // Run twice, so that the broadcaster is sent back down
-    await processor.next();
-    await processor.next();
+    let result = await process.next();
+    await process.next(result.value!);
 
     expect(returned).to.exist;
     expect(returned.value).to.equal(15);
